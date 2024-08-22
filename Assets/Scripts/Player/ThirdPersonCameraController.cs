@@ -1,7 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using System.ComponentModel.Design;
-using TreeEditor;
 
 public class ThirdPersonCameraController : MonoBehaviour
 {

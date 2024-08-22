@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using Unity.VisualScripting;
-using Microsoft.Win32.SafeHandles;
 
 public class ODMGearController : MonoBehaviour
 {
@@ -29,9 +27,7 @@ public class ODMGearController : MonoBehaviour
     [SerializeField] private ParticleSystem gazParticles;         // Particle system for gas effects
     [SerializeField] private ParticleSystem speedTrailParticles;  // Particle system for speed trail effects
 
-    [Header("Reset Velocity")]
-    [SerializeField] private float ResetVelocityTimeDelay = 1f;   // Delay before resetting velocity
-    [SerializeField] private float ResetVelocityDuration = 2f;    // Duration for resetting velocity
+    [Header("Gas")]
     public int maxGas;                                            // Maximum gas capacity
     public int currentGas;                                        // Current gas amount
 
@@ -181,8 +177,6 @@ public class ODMGearController : MonoBehaviour
 
     public void StopODMGear()
     {
-        StartCoroutine(ResetVelocityCouroutine());
-
         gazParticles.Stop();
         speedTrailParticles.Stop();
 
@@ -210,31 +204,6 @@ public class ODMGearController : MonoBehaviour
         {
             playerRb.constraints |= RigidbodyConstraints.FreezeRotationY;
         }
-    }
-
-    private IEnumerator ResetVelocityCouroutine()
-    {
-        playerController.isResetingVelocity = true;
-
-        yield return new WaitForSeconds(ResetVelocityTimeDelay);
-
-        if (canUseODMGear && !isUseODMGear && playerRb.velocity != Vector3.zero)
-        {
-            float elapsedTime = 0f;
-
-            while (playerRb.velocity != Vector3.zero)
-            {
-                Vector3.Lerp(playerRb.velocity, Vector3.zero, elapsedTime / ResetVelocityDuration);
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-
-            yield return new WaitUntil(() => playerRb.velocity == Vector3.zero || isUseODMGear || !canUseODMGear);
-                playerRb.velocity = playerController.SetVector3Gravity(playerRb.velocity);
-
-            playerController.isResetingVelocity = false;
-        }
-        else yield return null;            
     }
 
     private void DrawRope()
