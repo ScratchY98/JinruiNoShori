@@ -44,6 +44,11 @@ public class TitanController : MonoBehaviour
     private void Start()
     {
         UseBloodParticle(false);
+
+        if (LoadData.instance.isTitanSmoke)
+            smokeParticleSystem.Play();
+        else smokeParticleSystem.Stop();
+
         canMove = true;
         isEating = false;
         isDead = false;
@@ -173,10 +178,7 @@ public class TitanController : MonoBehaviour
 
         transform.position = new Vector3(transform.position.x, 0, transform.position.z);
 
-        yield return new WaitForSeconds(3);
-        smokeParticleSystem.Stop();
-
-        Destroy(this.gameObject);
+        Destroy(this.gameObject, 3f);
 
     }
 

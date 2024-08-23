@@ -25,7 +25,6 @@ public class PlayerAttack : MonoBehaviour
         {
             isAttacking = true;
             Attack();
-            Debug.Log("A");
         }
         else
             isAttacking = false;

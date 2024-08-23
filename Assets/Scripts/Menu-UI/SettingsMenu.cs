@@ -51,6 +51,14 @@ public class SettingsMenu : MonoBehaviour
         audioMixer.SetFloat("Sound", volume);
     }
 
+    public void SetTitanSmoke(bool isTitanSmoke)
+    {
+        // Set if we can to use the smoke of titan. We use a int for save a bool in PlayerPref. If isTitanSmokeInt = 1, we can, else we can't.
+        int isTitanSmokeInt = isTitanSmoke ? 1 : 0;
+
+        PlayerPrefs.SetInt("isTitanSmoke", isTitanSmokeInt);
+    }
+
     public void SetFullScreen(bool isFullScreen)
     {
         Screen.fullScreen = isFullScreen;
