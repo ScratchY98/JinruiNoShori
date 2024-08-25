@@ -5,7 +5,6 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] private string levelToLoad;
     [SerializeField] private GameObject settingsWindow;
-    [SerializeField] private GameObject inputsSettingsWindow;
 
     public void Start()
     {
@@ -27,15 +26,6 @@ public class MainMenu : MonoBehaviour
         settingsWindow.SetActive(false);
     }
 
-    public void InputsSettingsButton()
-    {
-        inputsSettingsWindow.SetActive(true);
-    }
-
-    public void CloseInputsSettingsWindow()
-    {
-        inputsSettingsWindow.SetActive(false);
-    }
 
     public void QuitGame()
     {

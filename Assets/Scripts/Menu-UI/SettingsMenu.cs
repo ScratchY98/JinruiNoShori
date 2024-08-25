@@ -3,22 +3,34 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.Rendering;
 
 public class SettingsMenu : MonoBehaviour
 {
-    public AudioMixer audioMixer;
-    public AudioSource audioSource;
+    [Header ("Audio")]
+    [SerializeField] private AudioMixer audioMixer;
+    [SerializeField] private Slider soundSlider;
 
-    public Dropdown resolutionDropdown;
+    [Header ("Resolutions")]
+    [SerializeField] private Dropdown resolutionDropdown;
+    private Resolution[] resolutions;
 
-    Resolution[] resolutions;
+    [Header ("Toggle")]
+    [SerializeField] private Toggle fullScreenToggle;
+    [SerializeField] private Toggle titanSmokeToggle;
 
-    public Slider soundSlider;
+    [Header("Other")]
+    [SerializeField] private bool isMainScene;
 
     public void Start()
     {
+        LoadResolutionData();
+        LoadFullScreenData();
+        LoadSoundData();
 
-        LoadResolution();
+        if(isMainScene)
+            LoadTitanSmokeToogleData();
+
         audioMixer.GetFloat("Sound", out float soundValueForSlider);
         soundSlider.value = soundValueForSlider;
 
@@ -49,6 +61,14 @@ public class SettingsMenu : MonoBehaviour
     public void SetSoundVolume(float volume)
     {
         audioMixer.SetFloat("Sound", volume);
+
+        PlayerPrefs.SetFloat("Sound", volume);
+    }
+
+    private void LoadSoundData()
+    {
+       
+        soundSlider.value = PlayerPrefs.GetFloat("Sound", 0);
     }
 
     public void SetTitanSmoke(bool isTitanSmoke)
@@ -59,8 +79,27 @@ public class SettingsMenu : MonoBehaviour
         PlayerPrefs.SetInt("isTitanSmoke", isTitanSmokeInt);
     }
 
+    private void LoadTitanSmokeToogleData()
+    {
+        titanSmokeToggle.isOn = PlayerPrefs.GetInt("isTitanSmoke", 1) == 1 ? true : false;
+    }
+
     public void SetFullScreen(bool isFullScreen)
     {
+        Screen.fullScreen = isFullScreen;
+
+        int isFullScreenInt = isFullScreen ? 1 : 0;
+
+        PlayerPrefs.SetInt("isFullScreen", isFullScreenInt);
+    }
+
+    private void LoadFullScreenData()
+    {
+        int isFullScreenInt = PlayerPrefs.GetInt("isFullScreen", 1);
+
+        bool isFullScreen = isFullScreenInt == 1 ? true : false;
+
+        fullScreenToggle.isOn = isFullScreen;
         Screen.fullScreen = isFullScreen;
     }
 
@@ -75,7 +114,7 @@ public class SettingsMenu : MonoBehaviour
         PlayerPrefs.SetInt("ResolutionH", height);
     }
 
-    private void LoadResolution()
+    private void LoadResolutionData()
     {
         int width = PlayerPrefs.GetInt("ResolutionW", 1920);
         int height = PlayerPrefs.GetInt("ResolutionH", 1080);

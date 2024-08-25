@@ -14,7 +14,7 @@ public class KeyBind : MonoBehaviour
     [SerializeField] private Text sprintButtonLbl;
     [SerializeField] private Text attackButtonLbl;
 
-    private enum KeyBinding
+    public enum KeyBinding
     {
         None,
         Left,
@@ -94,51 +94,56 @@ public class KeyBind : MonoBehaviour
         }
     }
 
-    public void ChangeLeftKey()
+    public void ChangeKeyButton(string key)
     {
-        leftButtonLbl.text = "Awaiting Input";
-        currentBinding = KeyBinding.Left;
+        KeyBinding binding;
+        if (Enum.TryParse(key, out binding))
+        {
+            ChangeKey(binding);
+        }
+        else
+        {
+            Debug.LogWarning("The key binding string is not valid.");
+        }
     }
 
-    public void ChangeRightKey()
+    public void ChangeKey(KeyBinding key)
     {
-        rightButtonLbl.text = "Awaiting Input";
-        currentBinding = KeyBinding.Right;
+        switch (key)
+        {
+            case KeyBinding.Left:
+                SetBindingAndLabel(leftButtonLbl, KeyBinding.Left);
+                break;
+            case KeyBinding.Right:
+                SetBindingAndLabel(rightButtonLbl, KeyBinding.Right);
+                break;
+            case KeyBinding.Up:
+                SetBindingAndLabel(upButtonLbl, KeyBinding.Up);
+                break;
+            case KeyBinding.Down:
+                SetBindingAndLabel(downButtonLbl, KeyBinding.Down);
+                break;
+            case KeyBinding.ODMGear:
+                SetBindingAndLabel(odmGearButtonLbl, KeyBinding.ODMGear);
+                break;
+            case KeyBinding.UseGas:
+                SetBindingAndLabel(useGasButtonLbl, KeyBinding.UseGas);
+                break;
+            case KeyBinding.Sprint:
+                SetBindingAndLabel(sprintButtonLbl, KeyBinding.Sprint);
+                break;
+            case KeyBinding.Attack:
+                SetBindingAndLabel(attackButtonLbl, KeyBinding.Attack);
+                break;
+            default:
+                Debug.Log("The key binding is not correct.");
+                break;
+        }
     }
 
-    public void ChangeUpKey()
+    private void SetBindingAndLabel(Text label, KeyBinding binding)
     {
-        upButtonLbl.text = "Awaiting Input";
-        currentBinding = KeyBinding.Up;
-    }
-
-    public void ChangeDownKey()
-    {
-        downButtonLbl.text = "Awaiting Input";
-        currentBinding = KeyBinding.Down;
-    }
-
-    public void ChangeODMGearKey()
-    {
-        odmGearButtonLbl.text = "Awaiting Input";
-        currentBinding = KeyBinding.ODMGear;
-    }
-
-    public void ChangeUseGasKey()
-    {
-        useGasButtonLbl.text = "Awaiting Input";
-        currentBinding = KeyBinding.UseGas;
-    }
-
-    public void ChangeSprintKey()
-    {
-        sprintButtonLbl.text = "Awaiting Input";
-        currentBinding = KeyBinding.Sprint;
-    }
-
-    public void ChangeAttackKey()
-    {
-        attackButtonLbl.text = "Awaiting Input";
-        currentBinding = KeyBinding.Attack;
+        label.text = "Awaiting Input";
+        currentBinding = binding;
     }
 }
