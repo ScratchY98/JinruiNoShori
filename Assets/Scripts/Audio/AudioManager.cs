@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour
 
     public static AudioManager instance;
 
+    // Create an instance of AudioManager.
     private void Awake()
     {
         if (instance != null)
@@ -19,6 +20,7 @@ public class AudioManager : MonoBehaviour
         instance = this;
     }
 
+    // Function to play a sound (used notably for gas).
     public AudioSource PlayClipAt(AudioClip clip, Vector3 pos)
     {
         GameObject tempGO = new GameObject("TempAudio");

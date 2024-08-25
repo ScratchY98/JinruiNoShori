@@ -26,13 +26,8 @@ public class PlayerController : MonoBehaviour
     // Others
     [HideInInspector] public Vector3 move;
     private Vector3 moveDirection;
-    public bool isResetingVelocity;
     [HideInInspector] public bool canMove;
 
-    private void Start()
-    {
-        isResetingVelocity = false;
-    }
     private void FixedUpdate()
     {
         Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, collisionLayers);
@@ -59,7 +54,7 @@ public class PlayerController : MonoBehaviour
 
             SetMove();
 
-            if (!isResetingVelocity && !playerRb.isKinematic)
+            if (!playerRb.isKinematic)
             {
                 playerRb.velocity = move;
 

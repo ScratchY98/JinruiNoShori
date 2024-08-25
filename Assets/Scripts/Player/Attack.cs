@@ -2,14 +2,17 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] private float AttackDistance = 3f;
+    [Header("Scripts's References")]
     [SerializeField] private SpawnTitan spawnTitan;
-    public LayerMask EnemyLayer;
     [SerializeField] private ODMGearController ODMGearControllerRef;
+
+    [Header("Others")]
+    [SerializeField] private float AttackDistance = 3f;
+    [SerializeField] private Transform player;
+    public LayerMask EnemyLayer;
 
     [HideInInspector] public bool isAttacking = false;
     [HideInInspector] public bool canAttack;
-    [SerializeField] private Transform player;
 
     private void Start()
     {
@@ -18,7 +21,6 @@ public class PlayerAttack : MonoBehaviour
 
     private void Update()
     {
-
         Debug.DrawRay(player.position, player.forward * AttackDistance, Color.green);
 
         if (Input.GetKey(LoadData.instance.attack) && canAttack)
