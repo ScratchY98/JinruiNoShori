@@ -3,8 +3,9 @@ using UnityEngine;
 public class ChangeMenuPanel : MonoBehaviour
 {
     [SerializeField] private GameObject gamePanel;
-    [SerializeField] private GameObject graphicsPanel;
     [SerializeField] private GameObject audioPanel;
+
+    [SerializeField] private GameObject graphicsPanel;
     [SerializeField] private GameObject inputPanel;
 
     private bool isFirstPanel = true;
@@ -22,11 +23,11 @@ public class ChangeMenuPanel : MonoBehaviour
             case "game":
                 panelToActivate = gamePanel;
                 break;
-            case "graphics":
-                panelToActivate = graphicsPanel;
-                break;
             case "audio":
                 panelToActivate = audioPanel;
+                break;
+            case "graphics":
+                panelToActivate = graphicsPanel;
                 break;
             case "input":
                 panelToActivate = inputPanel;
