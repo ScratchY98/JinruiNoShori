@@ -7,8 +7,10 @@ public class MainMenu : MonoBehaviour
 {
     private string mapToLoad;
     [SerializeField] private GameObject settingsWindow;
+    [SerializeField] private GameObject changeAvatarWindow;
     [SerializeField] private Dropdown mapDropdown;
     [SerializeField] private List<string> maps = new List<string>();
+    [SerializeField] private ChangeAvatar changeAvatar;
 
     public void Start()
     {
@@ -20,6 +22,7 @@ public class MainMenu : MonoBehaviour
         mapDropdown.AddOptions(maps);
 
         mapToLoad = maps[0];
+        changeAvatar.LoadAllColor();
     }
 
     // Button to start the game
@@ -34,6 +37,16 @@ public class MainMenu : MonoBehaviour
         settingsWindow.SetActive(true);
     }
 
+    public void OpenChangeAvatarWindow()
+    {
+        changeAvatarWindow.SetActive(true);
+    }
+
+    public void CloseChangeAvatarWindow()
+    {
+        changeAvatarWindow.SetActive(false);
+    }
+
     public void ChangeMap(int map)
     {
         mapToLoad = maps[map];
@@ -43,6 +56,7 @@ public class MainMenu : MonoBehaviour
     public void CloseSettingsWindow()
     {
         settingsWindow.SetActive(false);
+        changeAvatar.SaveAllColor();
     }
 
     // Button to exit
