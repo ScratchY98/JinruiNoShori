@@ -14,10 +14,15 @@ public class ODMGearController : MonoBehaviour
     [SerializeField] private Transform gunTipLeft;                // Transform of the left gun tip
     [SerializeField] private Transform player;                    // Transform of the player
     [SerializeField] private Transform playerCamera;              // Transform of the player's camera
-    public Transform ODMGearPoint;                                // Transform of the grappling point
-    [HideInInspector] public bool canUseODMGear;                     // Bool for can grapple or no.
+    [HideInInspector] public Transform ODMGearPoint;              // Transform of the grappling point
+    [SerializeField] private GameObject ODMGearPointPrefab;        // Prefab of the ODMGearPoint
+    [HideInInspector] public bool canUseODMGear;                  // Bool for can grapple or no.
     [SerializeField] private float maxDistance = 170f;            // Maximum distance for the grappling hook
     [SerializeField] private float ODMGearVelocity = 10;          // Velocity of the player while using the gear
+
+    [Header("Reset Velocity")]
+    [SerializeField] private float slowDownFactor;
+    [SerializeField] private float minMagnitudeForPlayerController = 0.3f;
 
     [Header("UI Elements")]
     [SerializeField] private Slider gasSlider;                    // UI slider to display remaining gas
@@ -35,7 +40,7 @@ public class ODMGearController : MonoBehaviour
     private Rigidbody playerRb;                                   // Rigidbody of the player
     private SpringJoint joint;                                    // Spring joint for the grappling hook
     public bool isUseODMGear = false;                             // Flag to check if the gear is in use
-    private bool isUsingGaz = false;                              // Flag to check if gas is being used
+    private bool isUseGaz = false;                                // Flag to check if gas is being used
     private float distanceFromPoint;                              // Distance from the grappling point
 
     private void Start()
@@ -63,7 +68,7 @@ public class ODMGearController : MonoBehaviour
 
    private void FixedUpdate()
     {
-        if (isUseODMGear && isUsingGaz && Input.GetKey(LoadData.instance.useGas))
+        if (isUseODMGear && isUseGaz && Input.GetKey(LoadData.instance.useGas))
         {
             UseGas();
         }
@@ -84,7 +89,7 @@ public class ODMGearController : MonoBehaviour
         {
             if (currentGas != 0)
             {
-                isUsingGaz = true;
+                isUseGaz = true;
                 speedTrailParticles.Play();
                 gazParticles.Play();
             }
@@ -126,7 +131,7 @@ public class ODMGearController : MonoBehaviour
     {
         speedTrailParticles.Stop();
         gazParticles.Stop();
-        isUsingGaz = false;
+        isUseGaz = false;
         if (joint)
             joint.spring = 4.5f;
     }
@@ -144,8 +149,14 @@ public class ODMGearController : MonoBehaviour
 
         if (Physics.Raycast(playerCamera.position, playerCamera.forward, out RaycastHit hit, maxDistance, ODMGearLayer))
         {
-           // if (!ODMGearPoint)
-           //     Instantiate(gameObject, hit.point);
+
+            if (ODMGearPoint == null)
+            {
+                Transform odmGearPoint = Instantiate(ODMGearPointPrefab.transform);
+                odmGearPoint.name = "ODMGearPoint";
+                ODMGearPoint = odmGearPoint;
+            }
+
             ODMGearPoint.position = hit.point;
             ODMGearPoint.parent = hit.transform;
 
@@ -189,22 +200,29 @@ public class ODMGearController : MonoBehaviour
         }
 
         isUseODMGear = false;
-        playerController.canMove = true;
 
-        ToggleFreezeRotationY();
+        StartCoroutine(SlowDownPlayer());
     }
 
-    private void ToggleFreezeRotationY()
+    private IEnumerator SlowDownPlayer()
     {
-        if ((playerRb.constraints & RigidbodyConstraints.FreezeRotationY) != 0)
+        while ((Mathf.Abs(playerRb.velocity.x) > minMagnitudeForPlayerController && Mathf.Abs(playerRb.velocity.z) > minMagnitudeForPlayerController) && !isUseODMGear && !playerController.isGrounded)
         {
-            playerRb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
+            playerRb.velocity *= slowDownFactor;
+
+            playerRb.velocity = new Vector3(playerRb.velocity.x, playerController.SetVector3Gravity(playerRb.velocity).y - playerRb.velocity.y, playerRb.velocity.z);
+
+            yield return new WaitForFixedUpdate();
         }
-        else
+
+        if (!isUseODMGear && canUseODMGear)
         {
-            playerRb.constraints |= RigidbodyConstraints.FreezeRotationY;
+            playerRb.velocity = Vector3.zero;
+            playerController.canMove = true;
         }
     }
+
+
 
     private void DrawRope()
     {

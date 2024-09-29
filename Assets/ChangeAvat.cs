@@ -9,6 +9,7 @@ public class ChangeAvatar : MonoBehaviour
     [SerializeField] private Color[] normalMatsColor;
     [SerializeField] private ColorPicker picker;
     [SerializeField] private Dropdown bodyPartsDropdown;
+    private int lastDropdownIndex;
 
     void Start()
     {
@@ -30,16 +31,35 @@ public class ChangeAvatar : MonoBehaviour
 
     void ChangeMat(int dropdownIndex)
     {
+        lastDropdownIndex = dropdownIndex;
         SaveAllColor();
 
+    }
+
+    void RefreshPicker()
+    {
         picker.onValueChanged.RemoveAllListeners();
-        picker.AssignColor(mats[dropdownIndex].color);
+        picker.AssignColor(mats[lastDropdownIndex].color);
         picker.onValueChanged.AddListener(color =>
         {
-            mats[dropdownIndex].color = color;
+            mats[lastDropdownIndex].color = color;
         });
-        mats[dropdownIndex].color = picker.CurrentColor;
+        mats[lastDropdownIndex].color = picker.CurrentColor;
     }
+
+    public void ResetColor()
+    {
+        for (int i = 0; i < mats.Length; i++)
+        {
+            PlayerPrefs.SetFloat(mats[i].name + "R", normalMatsColor[i].r);
+            PlayerPrefs.SetFloat(mats[i].name + "G", normalMatsColor[i].g);
+            PlayerPrefs.SetFloat(mats[i].name + "B", normalMatsColor[i].b);
+
+            mats[i].color = normalMatsColor[i];
+            RefreshPicker();
+        }
+    }
+
 
     public void SaveAllColor()
     {
@@ -50,6 +70,7 @@ public class ChangeAvatar : MonoBehaviour
             PlayerPrefs.SetFloat(mats[i].name + "B", mats[i].color.b);
         }
     }
+
 
     public void LoadAllColor()
     {

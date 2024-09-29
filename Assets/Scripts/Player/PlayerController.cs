@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius;
     [SerializeField] private LayerMask collisionLayers;
+    private float gravityY;
+    private float mass;
     [HideInInspector] public bool isGrounded;
 
     // Others
@@ -28,6 +30,11 @@ public class PlayerController : MonoBehaviour
     private Vector3 moveDirection;
     [HideInInspector] public bool canMove;
 
+    private void Start()
+    {
+        gravityY = Physics.gravity.y;
+        mass = playerRb.mass;
+    }
     private void FixedUpdate()
     {
         Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, collisionLayers);
@@ -76,7 +83,7 @@ public class PlayerController : MonoBehaviour
 
     public Vector3 SetVector3Gravity(Vector3 target)
     {
-        target.y = ((Physics.gravity.y * playerRb.mass)) * GravityMultiplier;
+        target.y = ((gravityY * mass)) * GravityMultiplier;
         return target;
     }
 
