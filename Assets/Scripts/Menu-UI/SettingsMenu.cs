@@ -17,9 +17,12 @@ public class SettingsMenu : MonoBehaviour
     [Header ("Toggle")]
     [SerializeField] private Toggle fullScreenToggle;
     [SerializeField] private Toggle titanSmokeToggle;
+    [SerializeField] private Toggle cloudToggle;
+    [SerializeField] private Toggle viewFPSToggle;
 
     [Header("Other")]
     [SerializeField] private bool isMainScene;
+    [SerializeField] private GameObject viewFPSText;
 
     public void Start()
     {
@@ -44,7 +47,9 @@ public class SettingsMenu : MonoBehaviour
         LoadSoundData();
 
         if (isMainScene)
-            LoadTitanSmokeToogleData();
+        LoadCloudToogleData();
+        LoadViewFPSToogleData();
+        LoadTitanSmokeToogleData();
     }
 
     // Set ResolutionDropdown options.
@@ -137,10 +142,40 @@ public class SettingsMenu : MonoBehaviour
 
         PlayerPrefs.SetInt("isTitanSmoke", isTitanSmokeInt);
     }
-
     // Load Titan Smoke Data.
     private void LoadTitanSmokeToogleData()
     {
         titanSmokeToggle.isOn = PlayerPrefs.GetInt("isTitanSmoke", 1) == 1 ? true : false;
     }
+
+    // Set Cloud
+    public void SetCloud(bool isCloud)
+    {
+        // Set if we can to use the cloud. We use a int for save a bool in PlayerPref. If isCloudint = 1, we can, else we can't.
+        int isCloudint = isCloud ? 1 : 0;
+
+        PlayerPrefs.SetInt("isCloud", isCloudint);
+    }
+
+    // Load Cloud Data.
+    private void LoadCloudToogleData()
+    {
+        cloudToggle.isOn = PlayerPrefs.GetInt("isCloud", 1) == 1 ? true : false;
+    }
+
+    public void SetViewFPS(bool isViewFPS)
+    {
+        // Set if we can to view the FPS. We use a int for save a bool in PlayerPref. If isViewFPSInt = 1, we can, else we can't.
+        int isViewFPSInt = isViewFPS ? 1 : 0;
+
+        PlayerPrefs.SetInt("isViewFPS", isViewFPSInt);
+        viewFPSText.SetActive(isViewFPS);
+    }
+
+    // Load Cloud Data.
+    private void LoadViewFPSToogleData()
+    {
+        viewFPSToggle.isOn = PlayerPrefs.GetInt("isViewFPS", 0) == 1 ? true : false;
+    }
+
 }

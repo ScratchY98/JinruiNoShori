@@ -9,17 +9,18 @@ public class GasPowerUp : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (ODMGearControllerRef == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-            ODMGearControllerRef = player.GetComponent<ODMGearController>();
-        }
-
 
         if (collision.CompareTag("Player"))
         {
             if (ODMGearControllerRef.currentGas != ODMGearControllerRef.maxGas)
             {
+                if (ODMGearControllerRef == null)
+                {
+                    player = GameObject.FindGameObjectWithTag("Player");
+                    ODMGearControllerRef = player.GetComponent<ODMGearController>();
+                }
+
+                SpawnObject.instance.SpawnObjectsAtRandomPosition(1);
                 AudioManager.instance.PlayClipAt(pickupSound, transform.position);
                 ODMGearControllerRef.FillGas(GasAmounts);
                 Destroy(gameObject);

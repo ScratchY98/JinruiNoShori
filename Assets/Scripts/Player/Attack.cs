@@ -3,7 +3,6 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     [Header("Scripts's References")]
-    [SerializeField] private SpawnTitan spawnTitan;
     [SerializeField] private ODMGearController ODMGearControllerRef;
 
     [Header("Others")]
@@ -42,7 +41,7 @@ public class PlayerAttack : MonoBehaviour
                 ODMGearControllerRef.ODMGearPoint.parent = null;
                 ODMGearControllerRef.StopODMGear();
                 titanController.Dead();
-                spawnTitan.SpawnTitanAtRandomPosition();
+                SpawnObject.instance.SpawnObjectsAtRandomPosition(0);
 
             }
         }
