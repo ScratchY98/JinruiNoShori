@@ -9,7 +9,7 @@ public class ViewFPS : MonoBehaviour
 
     private Dictionary<int, string> CachedNumberStrings = new();
     private int[] _frameRateSamples;
-    private int _cacheNumbersAmount = 300;
+    private int _cacheNumbersAmount = 400;
     private int _averageFromAmount = 30;
     private int _averageCounter = 0;
     private int _currentAveraged;

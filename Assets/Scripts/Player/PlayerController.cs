@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius;
     [SerializeField] private LayerMask collisionLayers;
+
     private float gravityY;
     private float mass;
     [HideInInspector] public bool isGrounded;
@@ -42,8 +44,8 @@ public class PlayerController : MonoBehaviour
 
         if (canMove)
         {
-            float horizontalInput = LoadData.instance.GetHorizontalInput();
-            float verticalInput = LoadData.instance.GetVerticalInput();
+            float horizontalInput = LoadData.instance.playerInput.actions["Move"].ReadValue<Vector2>().x; //LoadData.instance.GetHorizontalInput()
+            float verticalInput = LoadData.instance.playerInput.actions["Move"].ReadValue<Vector2>().y;
 
             Vector3 cameraForward = playerCamera.forward;
             Vector3 cameraRight = playerCamera.right;
@@ -56,7 +58,7 @@ public class PlayerController : MonoBehaviour
             moveDirection.Normalize();
 
 
-            isRunning = Input.GetKey(LoadData.instance.sprint);
+            isRunning = LoadData.instance.playerInput.actions["Sprint"].IsPressed();
             currentMoveSpeed = isRunning ? sprintSpeed : moveSpeed;
 
             SetMove();

@@ -1,11 +1,15 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class ThirdPersonCameraController : MonoBehaviour
 {
     [SerializeField] private Transform player;
-    [SerializeField] private float sensitivityX = 2.0f;
-    [SerializeField] private float sensitivityY = 2.0f;
+
+    [SerializeField] private float gamepadSensitivityX = 0.5f;
+    [SerializeField] private float gamepadSensitivityY = 0.5f;
+    [SerializeField] private float keyboardSensitivityX = 2.0f;
+    [SerializeField] private float keyboardSensitivityY = 2.0f;
     [SerializeField] private float maxXRot = 90f;
     [SerializeField] private float minXRot = -75f;
     [SerializeField] private float rotationSpeed = 5.0f;
@@ -58,8 +62,13 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     private void HandleCameraRotation()
     {
-        float mouseX = Input.GetAxisRaw("Mouse X") * sensitivityX;
-        float mouseY = Input.GetAxisRaw("Mouse Y") * sensitivityY;
+        bool isKeyboard = LoadData.instance.playerInput.currentControlScheme == "Keyboard";
+
+        float sensitivityX = isKeyboard ? keyboardSensitivityX : gamepadSensitivityX;
+        float sensitivityY = isKeyboard ? keyboardSensitivityY : gamepadSensitivityY;
+
+        float mouseX = LoadData.instance.playerInput.actions["Look"].ReadValue<Vector2>().x * sensitivityX;
+        float mouseY = LoadData.instance.playerInput.actions["Look"].ReadValue<Vector2>().y * sensitivityY;
 
         rotationX -= mouseY;
         rotationY += mouseX;

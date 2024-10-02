@@ -68,7 +68,7 @@ public class ODMGearController : MonoBehaviour
 
    private void FixedUpdate()
     {
-        if (isUseODMGear && isUseGaz && Input.GetKey(LoadData.instance.useGas))
+        if (isUseODMGear && isUseGaz && LoadData.instance.playerInput.actions["UseGas"].IsPressed())
         {
             UseGas();
         }
@@ -76,16 +76,16 @@ public class ODMGearController : MonoBehaviour
 
     private void HandleInput()
     {
-        if (Input.GetKeyDown(LoadData.instance.ODMGear) && canUseODMGear)
+        if (LoadData.instance.playerInput.actions["ODMGear"].WasPerformedThisFrame() && canUseODMGear)
         {
             StartODMGear();
 
         }
-        if (Input.GetKeyUp(LoadData.instance.ODMGear))
+        if (LoadData.instance.playerInput.actions["ODMGear"].WasReleasedThisFrame())
         {
             StopODMGear();
         }
-        if (Input.GetKeyDown(LoadData.instance.useGas) && isUseODMGear)
+        if (LoadData.instance.playerInput.actions["UseGas"].WasPerformedThisFrame() && isUseODMGear)
         {
             if (currentGas != 0)
             {
@@ -94,7 +94,7 @@ public class ODMGearController : MonoBehaviour
                 gazParticles.Play();
             }
         }
-        if (Input.GetKeyUp(LoadData.instance.useGas))
+        if (LoadData.instance.playerInput.actions["UseGas"].WasReleasedThisFrame())
         {
             StopUsingGas();
         }
@@ -102,21 +102,24 @@ public class ODMGearController : MonoBehaviour
 
     private void UseGas()
     {
+        Vector2 moveInput = LoadData.instance.playerInput.actions["Move"].ReadValue<Vector2>();
+        Debug.Log(moveInput);
+
         Vector3 ODMGearDirection = Vector3.zero;
 
-        if (Input.GetKey(LoadData.instance.left))
+        if (moveInput.x < 0)
             ODMGearDirection += (playerCamera.right * -1);
 
-        if (Input.GetKey(LoadData.instance.right))
+        if (moveInput.x > 0)
             ODMGearDirection += playerCamera.right;
 
-        if (Input.GetKey(LoadData.instance.up))
+        if (moveInput.y > 0)
             ODMGearDirection += playerCamera.up;
 
-        if (Input.GetKey(LoadData.instance.down))
+        if (moveInput.y < 0)
             ODMGearDirection += (playerCamera.up * -1);
 
-        if (!Input.GetKey(LoadData.instance.sprint))
+        if (!LoadData.instance.playerInput.actions["Sprint"].IsPressed())
             ODMGearDirection += playerCamera.forward;
 
         playerRb.AddForce(ODMGearDirection.normalized * ODMGearVelocity);

@@ -21,7 +21,7 @@ public class PlayerAttack : MonoBehaviour
     private void Update()
     {
         Debug.DrawRay(player.position, player.forward * AttackDistance, Color.green);
-        isAttacking = Input.GetKey(LoadData.instance.attack) && canAttack;
+        isAttacking = (LoadData.instance.playerInput.actions["Attack"].WasPerformedThisFrame() && canAttack);
 
         if (isAttacking)
             Attack();

@@ -47,9 +47,11 @@ public class SettingsMenu : MonoBehaviour
         LoadSoundData();
 
         if (isMainScene)
-        LoadCloudToogleData();
-        LoadViewFPSToogleData();
-        LoadTitanSmokeToogleData();
+        {
+            LoadCloudToogleData();
+            LoadViewFPSToogleData();
+            LoadTitanSmokeToogleData();
+        }
     }
 
     // Set ResolutionDropdown options.
