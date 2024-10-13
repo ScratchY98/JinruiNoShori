@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerDead : MonoBehaviour
 {
     [Header("Scripts's References")]
-    [SerializeField] private PlayerController playerControllerRef;
+    //[SerializeField] private PlayerController playerControllerRef;
     [SerializeField] private ODMGearController ODMGearControllerRef;
     [SerializeField] private ThirdPersonCameraController thirdPersonCameraControllerRef;
     [SerializeField] private PlayerAttack playerAttackRef;
@@ -27,7 +27,7 @@ public class PlayerDead : MonoBehaviour
         UseBloodParticle(false);
 
         // Enable player scripts on Start.
-        playerControllerRef.enabled = true;
+        //playerControllerRef.enabled = true;
         ODMGearControllerRef.enabled = true;
         playerAttackRef.enabled = true;
 
@@ -58,7 +58,7 @@ public class PlayerDead : MonoBehaviour
 
                 // Disables ODM Gear.
                 ODMGearControllerRef.StopODMGear();
-                ODMGearControllerRef.canUseODMGear = false;
+                ODMGearController.canUseODMGear = false;
                 ODMGearControllerRef.enabled = false;
 
                 // Disables the player's attack.
@@ -80,13 +80,13 @@ public class PlayerDead : MonoBehaviour
                 thirdPersonCameraControllerRef.enabled = false;
 
                 // Prevents the player from moving
-                playerControllerRef.canMove = false;
+                //playerControllerRef.canMove = false;
 
                 // Makes the rigidbody kinematic
                 rb.isKinematic = true;
 
                 // Disable the playerController script
-                playerControllerRef.enabled = false;
+                //playerControllerRef.enabled = false;
 
                 // Wait for the Eat animation to finish
                 Invoke("EatAnimationDelay", eatAnimationDelay);

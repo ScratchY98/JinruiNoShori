@@ -6,14 +6,14 @@ public class PlayerAnimator : MonoBehaviour
     private enum AnimationTriggers { Walk, Idle, Run, ODMGear, Attack }
     private Animator animator;
     private PlayerController playerControllerRef;
-    private ODMGearController ODMGearControllerRef;
+    private ODMGas ODMGasRef;
     private PlayerAttack playerAttackRef;
 
     private void Start()
     {
         animator = GetComponent<Animator>();
         playerControllerRef = GetComponent<PlayerController>();
-        ODMGearControllerRef = GetComponent<ODMGearController>();
+        ODMGasRef = GetComponent<ODMGas>();
         playerAttackRef = GetComponent<PlayerAttack>();
     }
 
@@ -44,22 +44,17 @@ public class PlayerAnimator : MonoBehaviour
     {
         if (playerControllerRef.canMove && !playerAttackRef.isAttacking)
         {
-            float horizontalVelocity = new Vector3(playerControllerRef.move.x, 0, playerControllerRef.move.z).magnitude;
+
+            float horizontalVelocity = playerControllerRef.inputDirection.magnitude;
 
             ResetAllAnimationTriggers();
 
             if (playerControllerRef.isRunning && horizontalVelocity > 0.1f)
-            {
                 animator.SetTrigger(AnimationTriggers.Run.ToString());
-            }
             else if (horizontalVelocity > 0.1f)
-            {
                 animator.SetTrigger(AnimationTriggers.Walk.ToString());
-            }
             else if (!playerAttackRef.isAttacking)
-            {
                 animator.SetTrigger(AnimationTriggers.Idle.ToString());
-            }
         }
         else
         {
@@ -78,13 +73,9 @@ public class PlayerAnimator : MonoBehaviour
 
     private void ODMGearAnimation()
     {
-        if (ODMGearControllerRef.isUseODMGear)
-        {
+        if (ODMGasRef.IsUseODMGear())
             animator.SetTrigger(AnimationTriggers.ODMGear.ToString());
-        }
         else
-        {
             animator.ResetTrigger(AnimationTriggers.ODMGear.ToString());
-        }
     }
 }

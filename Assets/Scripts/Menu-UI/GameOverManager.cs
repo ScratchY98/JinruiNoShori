@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class GameOverManager : MonoBehaviour
 {
     [Header("Script's References")]
-    [SerializeField] private PlayerController playerControllerRef;
+    //[SerializeField] private PlayerController playerControllerRef;
     [SerializeField] private ODMGearController ODMGearControllerRef;
     [SerializeField] private PlayerAttack playerAttackRef;
 

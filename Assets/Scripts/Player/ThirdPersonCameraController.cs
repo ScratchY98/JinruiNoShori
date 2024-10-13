@@ -16,7 +16,7 @@ public class ThirdPersonCameraController : MonoBehaviour
     [SerializeField] private float distance = 5.0f;
     [SerializeField] private float ODMGearDistance = 8.0f;
     [SerializeField] private float setDistanceTimeDuration = 0.5f;
-    [SerializeField] private ODMGearController ODMGearControllerRef;
+    [SerializeField] private ODMGas ODMGasRef;
 
     private bool isCoroutine;
     [SerializeField] private bool canMoveCamera;
@@ -45,7 +45,7 @@ public class ThirdPersonCameraController : MonoBehaviour
             HandleCameraRotation();
             HandleCameraPosition();
 
-            if (ODMGearControllerRef.isUseODMGear)
+            if (ODMGasRef.IsUseODMGear())
             {
                 if (!isCoroutine && distance != ODMGearDistance)
                     StartCoroutine(SetDistanceCoroutine(true));

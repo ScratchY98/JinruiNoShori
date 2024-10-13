@@ -24,9 +24,36 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "ODMGear",
+                    "name": "Left ODMGear",
                     "type": "Button",
                     "id": "c4899dcb-31d1-4334-af83-8935de137ba7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Right ODMGear",
+                    "type": "Button",
+                    "id": "8a150da9-488a-47a9-874d-96b8ec97bc48",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Left Rewind",
+                    "type": "Button",
+                    "id": "826cbaab-db9b-4113-ab15-27af87358fd4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Right Rewind",
+                    "type": "Button",
+                    "id": "851aefaf-1f25-499e-833a-bd3319d98580",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -152,7 +179,7 @@
                 {
                     "name": "",
                     "id": "f5f64ed1-4a9c-43ea-8630-9fee2c05d8bf",
-                    "path": "<Mouse>/rightButton",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
@@ -163,7 +190,7 @@
                 {
                     "name": "",
                     "id": "06527aaa-ec05-45e4-a697-b246f5b8b351",
-                    "path": "<Gamepad>/leftTrigger",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -196,7 +223,7 @@
                 {
                     "name": "",
                     "id": "de604efe-a9ca-4fa6-9d4a-4b0053d61efc",
-                    "path": "<Keyboard>/space",
+                    "path": "<Mouse>/middleButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
@@ -207,7 +234,7 @@
                 {
                     "name": "",
                     "id": "50a5adae-36bc-4b42-ac08-266d143e2c62",
-                    "path": "<Gamepad>/buttonEast",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -222,18 +249,84 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
-                    "action": "ODMGear",
+                    "action": "Left ODMGear",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "99bb498e-09fa-4df9-92f0-193506777995",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Left ODMGear",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "608c93a7-857e-4297-b043-f7cd5322b232",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Right ODMGear",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b7eab7ec-79e8-421a-86b0-4af2e272998c",
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "ODMGear",
+                    "action": "Right ODMGear",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "afea960d-83a6-4ec0-872e-32a685840e9a",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Left Rewind",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dfe52187-8a26-46c0-889b-610ccf57f72d",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Left Rewind",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "54529dae-a99b-45e5-8638-992c9859ac23",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Right Rewind",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7ce1a343-07e7-4006-83ac-5e46d5647700",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Right Rewind",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

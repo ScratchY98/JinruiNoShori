@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class PlayerAttack : MonoBehaviour
     [Header("Others")]
     [SerializeField] private float AttackDistance = 3f;
     [SerializeField] private Transform player;
+    private PlayerInput playerInput;
     public LayerMask EnemyLayer;
 
     [HideInInspector] public bool isAttacking = false;
@@ -16,12 +18,13 @@ public class PlayerAttack : MonoBehaviour
     private void Start()
     {
         canAttack = true;
+        playerInput = LoadData.instance.playerInput;
     }
 
     private void Update()
     {
         Debug.DrawRay(player.position, player.forward * AttackDistance, Color.green);
-        isAttacking = (LoadData.instance.playerInput.actions["Attack"].WasPerformedThisFrame() && canAttack);
+        isAttacking = playerInput.actions["Attack"].IsPressed() && canAttack;
 
         if (isAttacking)
             Attack();

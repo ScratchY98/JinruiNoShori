@@ -5,7 +5,7 @@ public class PauseMenu : MonoBehaviour
 {
     [Header("Script's References")]
     [SerializeField] private GameObject gameOverUI;
-    [SerializeField] private PlayerController playerController;
+    //[SerializeField] private PlayerController playerController;
     [SerializeField] private ODMGearController ODMGearControllerRef;
     [SerializeField] private PlayerAttack playerAttack;
 
@@ -34,7 +34,7 @@ public class PauseMenu : MonoBehaviour
     void Paused()
     {
         // Disable the playerController script.
-        playerController.enabled = false;
+        //playerController.enabled = false;
 
         // Disables the player's attack.
         playerAttack.enabled = false;
@@ -59,7 +59,7 @@ public class PauseMenu : MonoBehaviour
     public void Resume()
     {
         // Enable player scripts.
-        playerController.enabled = true;
+        //playerController.enabled = true;
         ODMGearControllerRef.enabled = true;
         playerAttack.enabled = true;
 

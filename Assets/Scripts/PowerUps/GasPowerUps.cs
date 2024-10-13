@@ -4,7 +4,7 @@ public class GasPowerUp : MonoBehaviour
 {
     [SerializeField] private int GasAmounts;
     [SerializeField] private AudioClip pickupSound;
-    [SerializeField] private ODMGearController ODMGearControllerRef;
+    [SerializeField] private static ODMGas ODMGasRef;
     private GameObject player;
 
     private void OnTriggerEnter(Collider collision)
@@ -12,17 +12,15 @@ public class GasPowerUp : MonoBehaviour
 
         if (collision.CompareTag("Player"))
         {
-            if (ODMGearControllerRef.currentGas != ODMGearControllerRef.maxGas)
+            if (ODMGasRef == null)
+                ODMGasRef = collision.GetComponent<ODMGas>();
+
+            if (ODMGasRef.gas != ODMGasRef.maxGas)
             {
-                if (ODMGearControllerRef == null)
-                {
-                    player = GameObject.FindGameObjectWithTag("Player");
-                    ODMGearControllerRef = player.GetComponent<ODMGearController>();
-                }
 
                 SpawnObject.instance.SpawnObjectsAtRandomPosition(1);
                 AudioManager.instance.PlayClipAt(pickupSound, transform.position);
-                ODMGearControllerRef.FillGas(GasAmounts);
+                ODMGasRef.FillGas(GasAmounts);
                 Destroy(gameObject);
             }
         }

@@ -3,113 +3,79 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Scripts's References")]
-    [SerializeField] private ODMGearController ODMGearControllerRef;
-    [SerializeField] private PlayerAttack playerAttack;
+    [Header("Component's Reference;")]
+    [SerializeField] private Transform playerCamera;
+    private ODMGas ODMGasRef;
 
     [Header("Speed")]
-    [SerializeField] private float moveSpeed = 5.0f;
-    [SerializeField] private float sprintSpeed = 10.0f;
-    [HideInInspector] public bool isRunning = false;
-    private float currentMoveSpeed;
+    [SerializeField] private float walkSpeed = 5f;
+    [SerializeField] private float sprintSpeed = 7f;
+    private float speed;
+    [HideInInspector] public bool isRunning;
+    [SerializeField] private float maxVelocity = 10f;
 
-    [Header("Components's References")]
-    [SerializeField] private Rigidbody playerRb;
-    [SerializeField] private Transform playerCamera;
+    [Header("GroundCheck:")]
+    [SerializeField] private float groundDrag = 5f;
+    [SerializeField] private float airDrag = 1f;
+    [SerializeField] private float groundDistance;
+    //[HideInInspector]
+    public bool canMove;
 
-    [Header("Ground Checks And Gravity")]
-    [SerializeField] private float GravityMultiplier = 1f;
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundCheckRadius;
-    [SerializeField] private LayerMask collisionLayers;
-
-    private float gravityY;
-    private float mass;
-    [HideInInspector] public bool isGrounded;
-
-    // Others
-    [HideInInspector] public Vector3 move;
-    private Vector3 moveDirection;
-    [HideInInspector] public bool canMove;
+    [HideInInspector] public Vector3 inputDirection;
+    private Rigidbody rb;
+    private bool isGrounded;
+    private PlayerInput playerInput;
 
     private void Start()
     {
-        gravityY = Physics.gravity.y;
-        mass = playerRb.mass;
-    }
-    private void FixedUpdate()
-    {
-        Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, collisionLayers);
-        isGrounded = colliders.Length > 0;
-
-        if (canMove)
-        {
-            float horizontalInput = LoadData.instance.playerInput.actions["Move"].ReadValue<Vector2>().x; //LoadData.instance.GetHorizontalInput()
-            float verticalInput = LoadData.instance.playerInput.actions["Move"].ReadValue<Vector2>().y;
-
-            Vector3 cameraForward = playerCamera.forward;
-            Vector3 cameraRight = playerCamera.right;
-
-            cameraForward.y = 0;
-            cameraRight.y = 0;
-
-            moveDirection = cameraForward.normalized * verticalInput + cameraRight.normalized * horizontalInput;
-
-            moveDirection.Normalize();
-
-
-            isRunning = LoadData.instance.playerInput.actions["Sprint"].IsPressed();
-            currentMoveSpeed = isRunning ? sprintSpeed : moveSpeed;
-
-            SetMove();
-
-            if (!playerRb.isKinematic)
-            {
-                playerRb.velocity = move;
-
-                if (moveDirection != Vector3.zero)
-                {
-                    Quaternion newRotation = Quaternion.LookRotation(moveDirection);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * 10.0f);
-                }
-            }
-        }
-    }
-
-    private void SetMove()
-    {
-        move = moveDirection * currentMoveSpeed;
-
-        move = SetVector3Gravity(move);     
-    }
-
-    public Vector3 SetVector3Gravity(Vector3 target)
-    {
-        target.y = ((gravityY * mass)) * GravityMultiplier;
-        return target;
+        rb = GetComponent<Rigidbody>();
+        ODMGasRef = GetComponent<ODMGas>();
+        playerInput = LoadData.instance.playerInput;
+        canMove = true;
     }
 
     private void Update()
     {
-        if (!ODMGearControllerRef.isUseODMGear)
+        Debug.DrawRay(transform.position, Vector3.down * groundDistance, Color.green);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundDistance);
+        if (!isGrounded || ODMGasRef.IsUseODMGear())
         {
-            Vector3 Zrotation = transform.rotation.eulerAngles;
-
-            Zrotation.z = 0f;
-
-            transform.rotation = Quaternion.Euler(Zrotation);
-
-            Vector3 Xrotation = transform.rotation.eulerAngles;
-
-            Xrotation.x = 0f;
-
-            transform.rotation = Quaternion.Euler(Xrotation);
+            canMove = false;
+            rb.drag = airDrag;
         }
+        else
+        {
+            canMove = true;
+            rb.drag = groundDrag;
+        }
+
+        rb.drag = isGrounded ? groundDrag : airDrag;
+
+        isRunning = playerInput.actions["Sprint"].IsPressed();
+        speed = isRunning ? sprintSpeed : walkSpeed;
     }
 
-    private void OnDrawGizmos()
+    void FixedUpdate()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        if (!canMove)
+            return;
+
+        Vector2 input = playerInput.actions["Move"].ReadValue<Vector2>();
+        inputDirection = new Vector3 (input.x, 0f, input.y).normalized;
+
+        if (inputDirection.magnitude >= 0.1f)
+        {
+            float targetAngle = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + playerCamera.eulerAngles.y;
+            Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            moveDirection.Normalize();
+
+            Quaternion newRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * 10.0f);
+
+            rb.AddForce(moveDirection * speed, ForceMode.Force);
+
+            if (rb.velocity.magnitude > maxVelocity)
+                rb.velocity = rb.velocity.normalized * maxVelocity;
+        }
     }
 }
