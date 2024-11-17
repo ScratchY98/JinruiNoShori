@@ -41,15 +41,15 @@ public class PlayerController : MonoBehaviour
         if (!isGrounded || ODMGasRef.IsUseODMGear())
         {
             canMove = false;
-            rb.drag = airDrag;
+            rb.linearDamping = airDrag;
         }
         else
         {
             canMove = true;
-            rb.drag = groundDrag;
+            rb.linearDamping = groundDrag;
         }
 
-        rb.drag = isGrounded ? groundDrag : airDrag;
+        rb.linearDamping = isGrounded ? groundDrag : airDrag;
 
         isRunning = playerInput.actions["Sprint"].IsPressed();
         speed = isRunning ? sprintSpeed : walkSpeed;
@@ -74,8 +74,8 @@ public class PlayerController : MonoBehaviour
 
             rb.AddForce(moveDirection * speed, ForceMode.Force);
 
-            if (rb.velocity.magnitude > maxVelocity)
-                rb.velocity = rb.velocity.normalized * maxVelocity;
+            if (rb.linearVelocity.magnitude > maxVelocity)
+                rb.linearVelocity = rb.linearVelocity.normalized * maxVelocity;
         }
     }
 }

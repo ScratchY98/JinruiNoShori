@@ -6,7 +6,7 @@ public class ODMGearController : MonoBehaviour
 {
 
     [Header("Visuals")]
-    [SerializeField] private LineRenderer lr;
+    [SerializeField] private ThirdDimensionLineRenderer lr;
     [SerializeField] private Transform gunTip;
 
     [Header("Grappling Settings")]
@@ -108,7 +108,7 @@ public class ODMGearController : MonoBehaviour
 
     public void StopODMGear()
     {
-        lr.positionCount = 0;
+        lr.ResetLineRenderer();
 
         if (joint != null)
             Destroy(joint);
@@ -150,17 +150,15 @@ public class ODMGearController : MonoBehaviour
     {
         if (joint == null)
         {
-            lr.positionCount = 0;
+            lr.SetPositions(null);
             return;
         }
 
-        if (lr.positionCount != 2)
-        {
-            lr.positionCount = 2;
-        }
+        Vector3[] lrPos = new Vector3[2];
+        lrPos[0] = gunTip.position;
+        lrPos[1] = ODMGearPoint.position;
 
-        lr.SetPosition(0, gunTip.position);
-        lr.SetPosition(1, ODMGearPoint.position);
+        lr.SetPositions(lrPos);
     }
 
     void OnValidate()
