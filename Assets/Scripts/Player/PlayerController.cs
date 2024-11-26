@@ -18,8 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundDrag = 5f;
     [SerializeField] private float airDrag = 1f;
     [SerializeField] private float groundDistance;
-    //[HideInInspector]
-    public bool canMove;
+    [HideInInspector] public bool canMove;
 
     [HideInInspector] public Vector3 inputDirection;
     private Rigidbody rb;

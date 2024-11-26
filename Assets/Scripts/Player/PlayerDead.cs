@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class PlayerDead : MonoBehaviour
@@ -15,8 +14,8 @@ public class PlayerDead : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private ParticleSystem[] bloodParticleSystem;
 
-    [SerializeField] private float eatAnimationDelay = 1.25f;
-    [SerializeField] private float deadDelay = 1f;
+    [SerializeField] [Min(0)] private float eatAnimationDelay = 1.25f;
+    [SerializeField] [Min(0)] private float deadDelay = 1f;
 
     [Header("Others")]
     [SerializeField] private string titanHandTag = "TitanHand";

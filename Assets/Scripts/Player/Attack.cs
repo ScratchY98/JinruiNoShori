@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,8 +8,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private ODMGearController ODMGearControllerRef;
 
     [Header("Others")]
-    [SerializeField] private float AttackDistance = 3f;
-    [SerializeField] private Transform player;
+    [SerializeField] [Min(0)] private float AttackDistance = 3f;
+    [SerializeField] private Transform playerCamera;
     private PlayerInput playerInput;
     public LayerMask EnemyLayer;
 
@@ -23,7 +24,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void Update()
     {
-        Debug.DrawRay(player.position, player.forward * AttackDistance, Color.green);
+        Debug.DrawRay(playerCamera.position, playerCamera.forward * AttackDistance, Color.green);
         isAttacking = playerInput.actions["Attack"].IsPressed() && canAttack;
 
         if (isAttacking)
@@ -35,13 +36,16 @@ public class PlayerAttack : MonoBehaviour
         RaycastHit hit;
 
 
-        if (Physics.Raycast(player.position, player.forward, out hit, AttackDistance, EnemyLayer))
+        if (Physics.Raycast(playerCamera.position, playerCamera.forward, out hit, AttackDistance, EnemyLayer))
         {
+            Debug.LogWarning("Attack", hit.collider.gameObject);
             TitanController titanController = GetTitanControllerFromParent(hit.collider.gameObject, 6);
 
             if (titanController != null)
             {
-                ODMGearControllerRef.ODMGearPoint.parent = null;
+                if (ODMGearControllerRef.ODMGearPoint != null)
+                    ODMGearControllerRef.ODMGearPoint.parent = null;
+
                 ODMGearControllerRef.StopODMGear();
                 titanController.Dead();
                 SpawnObject.instance.SpawnObjectsAtRandomPosition(0);
@@ -58,20 +62,18 @@ public class PlayerAttack : MonoBehaviour
         {
             if (goodParent == null)
             {
-                Debug.Log("Can't find fithParent");
+                Debug.LogWarning("Can't find fithParent");
                 return null;
             }
 
             TitanController titanController = goodParent.GetComponent<TitanController>();
             if (titanController != null)
-            {
                 return titanController;
-            }
 
             goodParent = goodParent.parent;
         }
 
-        Debug.Log("Can't find TitanController");
+        Debug.LogWarning("Can't find TitanController");
         return null;
     }
 }

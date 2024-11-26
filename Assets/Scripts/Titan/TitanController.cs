@@ -2,6 +2,15 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
 
+public enum WhatGizmosDraw
+{
+    PatrolRadius,
+    huntingDetectionRadius,
+    AttackDetectionRadius,
+    Destination
+}
+
+
 public class TitanController : MonoBehaviour
 {
     [Header("Components's References")]
@@ -11,18 +20,23 @@ public class TitanController : MonoBehaviour
     [SerializeField] private static Transform player;
 
     [Header("Hunting's Settings")]
-    [SerializeField] private float huntingDetectionRadius = 200f;
-    [SerializeField] private float huntingSpeed = 5f;
+    [SerializeField][Min(0)] private float huntingDetectionRadius = 200f;
+    [SerializeField][Min(0)] private float huntingSpeed = 5f;
     [HideInInspector] public bool isHunting = false;
+    [SerializeField] private GameObject huntingIndication;
 
     [Header("Patrol's Settings")]
-    [SerializeField] private float patrolRadius = 10f;
-    [SerializeField] private float patrolSpeed = 3f;
+    [SerializeField][Min(0)] private float patrolRadius = 10f;
+    [SerializeField][Min(0)] private float patrolSpeed = 3f;
     private Vector3 patrolDestination;
     private bool isPatrolling = true;
+    private bool isFirstPatrol = true;
+    [HideInInspector] public bool isRelax= false;
+    [SerializeField] [Min(0)] private float minRelaxDelay;
+    [SerializeField][Min(0)] private float maxRelaxDelay;
 
     [Header("Attack's Settings")]
-    [SerializeField] private float attackDetectionRadius = 5f;
+    [SerializeField][Min(0)] private float attackDetectionRadius = 5f;
     [HideInInspector] public bool isAttacking = false;
 
     [Header("Particle's Settings")]
@@ -30,15 +44,19 @@ public class TitanController : MonoBehaviour
     [SerializeField] private ParticleSystem[] bloodParticleSystem;
 
     [Header("IK's Settings")]
-    [SerializeField] private static Transform grab;
+    [SerializeField][Min(0)] private float ikWeight = 0f;
+    [SerializeField][Min(0)] private float ikSpeed = 2f;
+    [SerializeField][Min(0)] private float maxIKWeight = 1f;
+    public static Transform grab;
 
     [Header("Eat's Settings")]
     [HideInInspector] public bool isEating = false;
 
     [Header("Other's Settings")]
-    [SerializeField] private float destinationGizmosSIze = 5f;
+    [SerializeField][Min(0)] private float destinationGizmosSIze = 5f;
     [SerializeField] private Transform originRadius;
     [HideInInspector] public bool isDead;
+    [SerializeField] private WhatGizmosDraw whatGizmosDraw;
     private bool canMove = true;
 
     private void Start()
@@ -61,23 +79,31 @@ public class TitanController : MonoBehaviour
 
     private void Update()
     {
-        if (canMove)
-        {
-            CheckStatus();
+        if (!canMove)
+        return;
 
-            if (isHunting)
-            {
-                Hunting();
-            }
-            else if (isPatrolling)
-            {
+        CheckStatus();
+
+        if (!isHunting)
+        {
+            huntingIndication.SetActive(false);
+
+            if (isPatrolling)
                 Patrol();
-            }
+
+            return;
+
         }
+        
+        Hunting();
+
     }
 
     private void CheckStatus()
     {
+        if (isRelax)
+            return;
+
         if (Vector3.Distance(originRadius.position, player.position) <= huntingDetectionRadius)
         {
             isPatrolling = false;
@@ -100,9 +126,9 @@ public class TitanController : MonoBehaviour
             isAttacking = false;
         }
     }
-
     private void Hunting()
     {
+        huntingIndication.SetActive(true);
         agent.speed = huntingSpeed;
         agent.destination = SamplePos(player.position);;
     }
@@ -111,11 +137,31 @@ public class TitanController : MonoBehaviour
     {
         agent.speed = patrolSpeed;
 
-        if(ComparePosWithoutYAxis(transform.position, agent.destination))
-            patrolDestination = GetRandomPatrolPoint();
+        if (!isPatrolling)
+            return;
 
-        if (isPatrolling)
-            agent.destination = patrolDestination;
+        if (ComparePosWithoutYAxis(transform.position, agent.destination))
+        {
+            if (isFirstPatrol)
+            {
+                isFirstPatrol = false;
+                RelaxAndChoice();
+            }
+            else
+            {
+                isRelax = true;
+                agent.speed = 0;
+                Invoke("RelaxAndChoice", Random.Range(minRelaxDelay, maxRelaxDelay));
+            }
+        }
+    }
+
+    private void RelaxAndChoice()
+    {
+        isRelax = false;
+        agent.speed = patrolSpeed;
+        patrolDestination = GetRandomPatrolPoint();
+        agent.destination = patrolDestination;
     }
 
     private Vector3 SamplePos(Vector3 target)
@@ -134,9 +180,7 @@ public class TitanController : MonoBehaviour
 
     private Vector3 GetRandomPatrolPoint()
     {
-        Vector3 randomDirection = Random.insideUnitSphere * patrolRadius;
-        randomDirection += transform.position;
-        return SamplePos(randomDirection);
+        return SamplePos((Random.insideUnitSphere * patrolRadius) + transform.position);
     }
 
     private void UseBloodParticle(bool active)
@@ -152,6 +196,8 @@ public class TitanController : MonoBehaviour
 
     public void Dead()
     {
+        Debug.Log("Dead !");
+        huntingIndication.SetActive(false);
         isDead = true;
         canMove = false;
         agent.isStopped = true;
@@ -163,6 +209,7 @@ public class TitanController : MonoBehaviour
 
     public void Eat()
     {
+        huntingIndication.SetActive(false);
         canMove = false;
         isHunting = false;
         isPatrolling = false;
@@ -184,45 +231,56 @@ public class TitanController : MonoBehaviour
 
     private void OnAnimatorIK(int layerIndex)
     {
-        if (isAttacking && !isEating)
+        if (isAttacking && !isEating && Vector3.Dot(Vector3.forward, transform.InverseTransformPoint(grab.position)) > 0)
         {
-            float dotProduct = Vector3.Dot(Vector3.forward, transform.InverseTransformPoint(grab.position));
+            ikWeight = Mathf.MoveTowards(ikWeight, maxIKWeight, ikSpeed * Time.deltaTime);
 
-            if (dotProduct > 0)
-            {
-                SetHandsIK(AvatarIKGoal.RightHand, grab);
-                SetHandsIK(AvatarIKGoal.LeftHand, grab);
+            // Appliquer l'IK pour les mains
+            SetHandsIK(AvatarIKGoal.RightHand, grab);
+            SetHandsIK(AvatarIKGoal.LeftHand, grab);
 
-                SetHeadIK(grab);
-            }
+            // Appliquer l'IK pour la tête
+            SetHeadIK(grab);
         }
+        else
+            ikWeight = 0;
     }
 
     private void SetHandsIK(AvatarIKGoal IkGoal, Transform target)
     {
-        animator.SetIKPositionWeight(IkGoal, 1);
+        animator.SetIKPositionWeight(IkGoal, ikWeight);
 
         animator.SetIKPosition(IkGoal, target.position);
     }
 
     private void SetHeadIK(Transform target)
     {
-        animator.SetLookAtWeight(1);
+        animator.SetLookAtWeight(ikWeight);
         animator.SetLookAtPosition(target.position);
     }
 
     private void OnDrawGizmos()
     {
-       Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(originRadius.position, patrolRadius);
-
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(agent.destination, destinationGizmosSIze);
-        /*
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(originRadius.position, huntingDetectionRadius);
-       */
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(originRadius.position, attackDetectionRadius);
+        switch (whatGizmosDraw)
+        {
+            case WhatGizmosDraw.PatrolRadius:
+                Gizmos.color = Color.white;
+                Gizmos.DrawWireSphere(originRadius.position, patrolRadius);
+                break;
+            case WhatGizmosDraw.huntingDetectionRadius:
+                Gizmos.color = Color.blue;
+                Gizmos.DrawWireSphere(originRadius.position, huntingDetectionRadius);
+                break;
+            case WhatGizmosDraw.AttackDetectionRadius:
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(originRadius.position, attackDetectionRadius);
+                break;
+            case WhatGizmosDraw.Destination:
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireSphere(agent.destination, destinationGizmosSIze);
+                break;
+            default:
+                break;
+        }
     }
 }

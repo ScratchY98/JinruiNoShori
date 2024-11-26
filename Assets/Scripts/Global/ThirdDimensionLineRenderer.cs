@@ -49,7 +49,7 @@ public class ThirdDimensionLineRenderer : MonoBehaviour
         _meshRenderer.enabled = false;
     }
 
-    void LateUpdate()
+    void Update()
     {
         GenerateMesh();
     }

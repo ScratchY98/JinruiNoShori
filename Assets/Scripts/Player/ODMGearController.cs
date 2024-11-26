@@ -15,12 +15,12 @@ public class ODMGearController : MonoBehaviour
     [SerializeField] private Transform playerCamera;
     [HideInInspector] public Transform ODMGearPoint;
     [SerializeField] private GameObject ODMGearPointPrefab;
-    [SerializeField] private float ODMGearVelocity = 10;
+    [SerializeField][Min(0)] private float ODMGearVelocity = 10;
+    private float originalDistance;
     [SerializeField] private ODMGearController odm;
 
     [Header("Joint Settings")]
-    [SerializeField] private float jointTolerance;
-    [SerializeField] private float maxDistance = 170f;
+    [SerializeField] [Min(0)] private float maxDistance = 170f;
 
     [Header("Input")]
     [SerializeField] private bool isLeft;
@@ -60,7 +60,6 @@ public class ODMGearController : MonoBehaviour
             Rewind();
         else if (!playerRb.useGravity)
             playerRb.useGravity = true;
-
     }
 
     private void HandleInput()
@@ -80,7 +79,11 @@ public class ODMGearController : MonoBehaviour
         playerRb.useGravity = false;
 
         Vector3 direction = (ODMGearPoint.position - player.position).normalized;
-        playerRb.AddForce(direction * ODMGearVelocity * Time.deltaTime, ForceMode.Impulse);
+        playerRb.AddForce(direction * ODMGearVelocity * Time.deltaTime, ForceMode.Acceleration);
+
+
+        float distance = Vector3.Distance(player.position, ODMGearPoint.position) - 0.1f;
+        originalDistance = (distance < originalDistance) ? distance : originalDistance;
     }
 
     private void StartODMGear()
@@ -125,8 +128,9 @@ public class ODMGearController : MonoBehaviour
         joint.spring = 4.5f;
         joint.damper = 10;
         joint.massScale = 4.5f;
-        joint.tolerance = jointTolerance; 
-        joint.maxDistance = Vector3.Distance(player.position, ODMGearPoint.position);
+        joint.tolerance = 0.025f;      
+        originalDistance = Vector3.Distance(player.position, ODMGearPoint.position) - 0.1f;
+        joint.maxDistance = originalDistance;
         joint.minDistance = 0;
     }
 
@@ -140,7 +144,12 @@ public class ODMGearController : MonoBehaviour
 
     private void UpdateJoint()
     {
-        joint.maxDistance = Vector3.Distance(player.position, ODMGearPoint.position);
+        SetConnectedAunchor();
+        float distance = Vector3.Distance(player.position, ODMGearPoint.position) - 0.1f;
+
+        Debug.Log(distance + originalDistance);
+        joint.maxDistance = (distance < originalDistance) ? distance : originalDistance;
+        
 
         if (joint.maxDistance < 0)
             joint.maxDistance = 0;

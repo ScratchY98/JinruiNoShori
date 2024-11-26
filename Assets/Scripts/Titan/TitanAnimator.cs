@@ -3,7 +3,7 @@ using System;
 
 public class TitanAnimator : MonoBehaviour
 {
-    private enum AnimationTriggers { Walk, Attack, Eat }
+    private enum AnimationTriggers { Walk, Attack, Eat, Idle }
     [SerializeField] private Animator animator;
     [SerializeField] private TitanController titanController;
 
@@ -43,11 +43,20 @@ public class TitanAnimator : MonoBehaviour
 
     void EatAnimation()
     {
-        if (titanController.isEating)
-        {
-            ResetAllAnimationTriggers();
-            animator.SetTrigger(AnimationTriggers.Eat.ToString());
-        }
+        if (!titanController.isEating)
+            return;
+
+        ResetAllAnimationTriggers();
+        animator.SetTrigger(AnimationTriggers.Eat.ToString());
+    }
+
+    void IdleAnimation()
+    {
+        if (!titanController.isRelax)
+            return;
+
+        ResetAllAnimationTriggers();
+        animator.SetTrigger(AnimationTriggers.Idle.ToString());
     }
 }
 
