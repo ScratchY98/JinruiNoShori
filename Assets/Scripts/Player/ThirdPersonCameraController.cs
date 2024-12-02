@@ -4,30 +4,43 @@ using UnityEngine.InputSystem;
 
 public class ThirdPersonCameraController : MonoBehaviour
 {
+    [Header ("Component's Reference :")]
     [SerializeField] private Transform player;
+    private PlayerInput playerInput;
 
-    [SerializeField] private float gamepadSensitivityX = 0.5f;
-    [SerializeField] private float gamepadSensitivityY = 0.5f;
-    [SerializeField] private float keyboardSensitivityX = 2.0f;
-    [SerializeField] private float keyboardSensitivityY = 2.0f;
-    [SerializeField] private float maxXRot = 90f;
-    [SerializeField] private float minXRot = -75f;
-    [SerializeField] private float rotationSpeed = 5.0f;
-    [SerializeField] private float distance = 5.0f;
-    [SerializeField] private float ODMGearDistance = 8.0f;
-    [SerializeField] private float setDistanceTimeDuration = 0.5f;
+    [Header("Script's Reference :")]
     [SerializeField] private ODMGas ODMGasRef;
 
-    private bool isCoroutine;
-    [SerializeField] private bool canMoveCamera;
 
-    [SerializeField] private float WallDistance = 0.4f;
+    [Header("Limit's Settings :")]
+    [SerializeField] private float maxXRot = 90f;
+    [SerializeField] private float minXRot = -75f;
+
+    [Header("Speed settings :")]
+    [SerializeField] private float rotationSpeed = 5.0f;
+
+    [Header ("Distance and offset settings :")]
     [SerializeField] private Vector3 cameraOffset = new Vector3(0, 0, 0);
+    [SerializeField] private float WallDistance = 0.4f;
+    [SerializeField] private float setDistanceTimeDuration = 0.5f;
     [SerializeField] private float initialDistance;
-    [SerializeField] private Quaternion rot;
+    [SerializeField] private float distance = 5.0f;
+    [SerializeField] private float ODMGearDistance = 8.0f;
+    private bool isCoroutine;
 
+    // Sensitivity Settings
+    private float gamepadSensitivity;
+    private float mouseSensitivity;
+
+    // Rotations settings
+    private Quaternion rot;
     private float rotationX = 0;
     private float rotationY = 0;
+
+
+
+    [Header("Others :")]
+    [SerializeField] private bool canMoveCamera;
 
     private void Start()
     {
@@ -36,25 +49,29 @@ public class ThirdPersonCameraController : MonoBehaviour
         initialDistance = distance;
         isCoroutine = false;
         canMoveCamera = true;
+
+        playerInput = LoadData.instance.playerInput;
+        mouseSensitivity = PlayerPrefs.GetFloat("MouseSensibilityData", 0.5f);
+        gamepadSensitivity = PlayerPrefs.GetFloat("GamepadSensibilityData", 2.5f);
     }
 
     private void LateUpdate()
     {
-        if (canMoveCamera)
-        {
-            HandleCameraRotation();
-            HandleCameraPosition();
+        if (!canMoveCamera)
+            return;
 
-            if (ODMGasRef.IsUseODMGear())
-            {
-                if (!isCoroutine && distance != ODMGearDistance)
-                    StartCoroutine(SetDistanceCoroutine(true));
-            }
-            else
-            {
-                if (!isCoroutine && distance != initialDistance)
-                    StartCoroutine(SetDistanceCoroutine(false));
-            }
+        HandleCameraRotation();
+        HandleCameraPosition();
+
+        if (ODMGasRef.IsUseODMGear())
+        {
+            if (!isCoroutine && distance != ODMGearDistance)
+                StartCoroutine(SetDistanceCoroutine(true));
+        }
+        else
+        {
+            if (!isCoroutine && distance != initialDistance)
+                StartCoroutine(SetDistanceCoroutine(false));
         }
 
         rot = transform.rotation;
@@ -64,11 +81,10 @@ public class ThirdPersonCameraController : MonoBehaviour
     {
         bool isKeyboard = LoadData.instance.playerInput.currentControlScheme == "Keyboard";
 
-        float sensitivityX = isKeyboard ? keyboardSensitivityX : gamepadSensitivityX;
-        float sensitivityY = isKeyboard ? keyboardSensitivityY : gamepadSensitivityY;
+        float sensitivity = isKeyboard ? mouseSensitivity : gamepadSensitivity;
 
-        float mouseX = LoadData.instance.playerInput.actions["Look"].ReadValue<Vector2>().x * sensitivityX;
-        float mouseY = LoadData.instance.playerInput.actions["Look"].ReadValue<Vector2>().y * sensitivityY;
+        float mouseX = LoadData.instance.playerInput.actions["Look"].ReadValue<Vector2>().x * sensitivity;
+        float mouseY = LoadData.instance.playerInput.actions["Look"].ReadValue<Vector2>().y * sensitivity;
 
         rotationX -= mouseY;
         rotationY += mouseX;
@@ -85,9 +101,7 @@ public class ThirdPersonCameraController : MonoBehaviour
 
         RaycastHit hit;
         if (Physics.Raycast(player.position, -transform.forward, out hit, distance))
-        {
             offset = hit.point + transform.forward * WallDistance;
-        }
 
         transform.position = offset;
     }

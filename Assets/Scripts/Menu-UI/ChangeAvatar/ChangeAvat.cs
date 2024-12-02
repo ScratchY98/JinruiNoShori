@@ -27,6 +27,8 @@ public class ChangeAvatar : MonoBehaviour
             mats[0].color = color;
         });
         mats[0].color = picker.CurrentColor;
+
+        RefreshPicker();
     }
 
     void ChangeMat(int dropdownIndex)

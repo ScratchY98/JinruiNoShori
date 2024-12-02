@@ -8,16 +8,16 @@ public class AudioManager : MonoBehaviour
 
     public static AudioManager instance;
 
-    // Create an instance of AudioManager.
     private void Awake()
     {
-        if (instance != null)
+        if (instance != null && instance != this)
         {
-            Debug.LogWarning("Il y a plus d'une instance de AudioManager dans la scène");
+            Destroy(this.gameObject);
             return;
         }
 
         instance = this;
+        DontDestroyOnLoad(this.gameObject);
     }
 
     // Function to play a sound (used notably for gas).

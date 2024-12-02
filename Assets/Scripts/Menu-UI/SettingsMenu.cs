@@ -20,6 +20,10 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] private Toggle cloudToggle;
     [SerializeField] private Toggle viewFPSToggle;
 
+    [Header("Slider")]
+    [SerializeField] private Slider gamepadSensibility;
+    [SerializeField] private Slider mouseSensibility;
+
     [Header("Other")]
     [SerializeField] private bool isMainScene;
     [SerializeField] private GameObject viewFPSText;
@@ -48,6 +52,8 @@ public class SettingsMenu : MonoBehaviour
 
         if (isMainScene)
         {
+            LoadGamepadSensibilityData();
+            LoadMouseSensibilityData();
             LoadCloudToogleData();
             LoadViewFPSToogleData();
             LoadTitanSmokeToogleData();
@@ -148,6 +154,28 @@ public class SettingsMenu : MonoBehaviour
     private void LoadTitanSmokeToogleData()
     {
         titanSmokeToggle.isOn = PlayerPrefs.GetInt("isTitanSmoke", 1) == 1 ? true : false;
+    }
+
+    public void SetGamepadSensibility(float x)
+    {
+        PlayerPrefs.SetFloat("GamepadSensibilityData", x);
+    }
+
+    public void SetMouseSensibility(float x)
+    {
+        PlayerPrefs.SetFloat("MouseSensibilityData", x);
+    }
+
+    // Load Gamepad's Sensibility Data.
+    private void LoadGamepadSensibilityData()
+    {
+        gamepadSensibility.value = PlayerPrefs.GetFloat("GamepadSensibilityData", 2.5f);
+    }
+
+    // Load Mouse's Data.
+    private void LoadMouseSensibilityData()
+    {
+        mouseSensibility.value = PlayerPrefs.GetFloat("MouseSensibilityData", 0.5f);
     }
 
     // Set Cloud

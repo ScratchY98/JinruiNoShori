@@ -71,21 +71,16 @@ public class PlayerDead : MonoBehaviour
                 transform.rotation = other.transform.rotation;
 
                 // Puts the camera in the correct position
-                Transform cameraDeadPos = titan.transform.GetChild(2);
+                Transform cameraDeadPos = titan.transform.GetChild(2).GetChild(0);
+                Debug.LogWarning(titan.transform.GetChild(2).GetChild(0).gameObject);
                 thirdPersonCameraControllerRef.transform.parent = cameraDeadPos.transform;
                 thirdPersonCameraControllerRef.ActiveDeathCamera(cameraDeadPos.position, cameraDeadPos.rotation);
 
                 // Disables the camera
                 thirdPersonCameraControllerRef.enabled = false;
 
-                // Prevents the player from moving
-                //playerControllerRef.canMove = false;
-
                 // Makes the rigidbody kinematic
                 rb.isKinematic = true;
-
-                // Disable the playerController script
-                //playerControllerRef.enabled = false;
 
                 // Wait for the Eat animation to finish
                 Invoke("EatAnimationDelay", eatAnimationDelay);

@@ -233,6 +233,7 @@ public class TitanController : MonoBehaviour
     {
         if (isAttacking && !isEating && Vector3.Dot(Vector3.forward, transform.InverseTransformPoint(grab.position)) > 0)
         {
+            agent.speed = 0;
             ikWeight = Mathf.MoveTowards(ikWeight, maxIKWeight, ikSpeed * Time.deltaTime);
 
             // Appliquer l'IK pour les mains

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3494ef8a8c1bf0748b956f2482993b7f, type: 3}
   m_Name: Titan
   m_EditorClassIdentifier: 
-  prefabs: {fileID: 3133894563433491305, guid: 2f8b276d8fbeda04c916e57a1f7f7db8, type: 3}
-  YSpawnDiff: 0
+  prefabs: {fileID: 5794256951403415632, guid: 8be1160679a5ec64fa4a0625eb6cd6a1, type: 3}
+  YSpawnDiff: 0.1151224
   objectNumber: 15
   spawnRange: 600
