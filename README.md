@@ -5,4 +5,4 @@ His website : https://jinruinoshori.netlify.app
 
 His itch.io page : https://scratchqy.itch.io/jinruinoshori-aot-fan-game
 
-Use Unity 6 URP.
+Use Unity 6.000.0.27f1 URP.
