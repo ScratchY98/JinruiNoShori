@@ -16289,7 +16289,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ODMGearControllerRef: {fileID: 7998878580819567762}
   AttackDistance: 12
-  camera: {fileID: 0}
+  playerCamera: {fileID: 0}
   EnemyLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -16674,15 +16674,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6393009044024504234, guid: ed7cfdf3affeb4d4eb0af69e6adbdd85, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.028131122
+      value: 0.043
       objectReference: {fileID: 0}
     - target: {fileID: 6393009044024504234, guid: ed7cfdf3affeb4d4eb0af69e6adbdd85, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.28934604
+      value: -0.287
       objectReference: {fileID: 0}
     - target: {fileID: 6393009044024504234, guid: ed7cfdf3affeb4d4eb0af69e6adbdd85, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.80320936
+      value: 0.963
       objectReference: {fileID: 0}
     - target: {fileID: 6393009044024504234, guid: ed7cfdf3affeb4d4eb0af69e6adbdd85, type: 3}
       propertyPath: m_LocalRotation.w

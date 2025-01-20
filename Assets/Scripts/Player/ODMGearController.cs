@@ -147,7 +147,6 @@ public class ODMGearController : MonoBehaviour
         SetConnectedAunchor();
         float distance = Vector3.Distance(player.position, ODMGearPoint.position) - 0.1f;
 
-        Debug.Log(distance + originalDistance);
         joint.maxDistance = (distance < originalDistance) ? distance : originalDistance;
         
 

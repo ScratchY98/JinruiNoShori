@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
+using static UnityEngine.AudioSettings;
+using System.Linq.Expressions;
 
 public class ThirdPersonCameraController : MonoBehaviour
 {
-    [Header ("Component's Reference :")]
+    [Header("Component's Reference :")]
     [SerializeField] private Transform player;
     private PlayerInput playerInput;
 
@@ -19,7 +21,7 @@ public class ThirdPersonCameraController : MonoBehaviour
     [Header("Speed settings :")]
     [SerializeField] private float rotationSpeed = 5.0f;
 
-    [Header ("Distance and offset settings :")]
+    [Header("Distance and offset settings :")]
     [SerializeField] private Vector3 cameraOffset = new Vector3(0, 0, 0);
     [SerializeField] private float WallDistance = 0.4f;
     [SerializeField] private float setDistanceTimeDuration = 0.5f;
@@ -28,19 +30,16 @@ public class ThirdPersonCameraController : MonoBehaviour
     [SerializeField] private float ODMGearDistance = 8.0f;
     private bool isCoroutine;
 
-    // Sensitivity Settings
-    private float gamepadSensitivity;
-    private float mouseSensitivity;
+    [Header("Sensitivity Settings")]
+    [SerializeField] private float gamepadSensitivity;
+    [SerializeField] private float mouseSensitivity;
+    [SerializeField] private float lerpSpeed = 12.5f;
 
     // Rotations settings
     private Quaternion rot;
-    private float rotationX = 0;
-    private float rotationY = 0;
+    private Vector2 rotation;
 
-
-
-    [Header("Others :")]
-    [SerializeField] private bool canMoveCamera;
+    private bool canMoveCamera;
 
     private void Start()
     {
@@ -51,8 +50,8 @@ public class ThirdPersonCameraController : MonoBehaviour
         canMoveCamera = true;
 
         playerInput = LoadData.instance.playerInput;
-        mouseSensitivity = PlayerPrefs.GetFloat("MouseSensibilityData", 0.5f);
-        gamepadSensitivity = PlayerPrefs.GetFloat("GamepadSensibilityData", 2.5f);
+        ChangeSensitivity(PlayerPrefs.GetFloat("MouseSensibilityData", 750f), false);
+        ChangeSensitivity(PlayerPrefs.GetFloat("GamepadSensibilityData", 50f), true);
     }
 
     private void LateUpdate()
@@ -63,36 +62,38 @@ public class ThirdPersonCameraController : MonoBehaviour
         HandleCameraRotation();
         HandleCameraPosition();
 
-        if (ODMGasRef.IsUseODMGear())
-        {
-            if (!isCoroutine && distance != ODMGearDistance)
-                StartCoroutine(SetDistanceCoroutine(true));
-        }
-        else
-        {
-            if (!isCoroutine && distance != initialDistance)
-                StartCoroutine(SetDistanceCoroutine(false));
-        }
+        float targetDistance = ODMGasRef.IsUseODMGear() ? ODMGearDistance : initialDistance;
+        bool shouldStartCoroutine = !isCoroutine && distance != targetDistance;
+
+        if (shouldStartCoroutine)
+            StartCoroutine(SetDistanceCoroutine(ODMGasRef.IsUseODMGear()));
 
         rot = transform.rotation;
     }
 
     private void HandleCameraRotation()
     {
-        bool isKeyboard = LoadData.instance.playerInput.currentControlScheme == "Keyboard";
+        float sensitivity = playerInput.currentControlScheme == "Keyboard" ? mouseSensitivity : gamepadSensitivity;
 
-        float sensitivity = isKeyboard ? mouseSensitivity : gamepadSensitivity;
+        Vector2 lookInput =  playerInput.actions["Look"].ReadValue<Vector2>();
 
-        float mouseX = LoadData.instance.playerInput.actions["Look"].ReadValue<Vector2>().x * sensitivity;
-        float mouseY = LoadData.instance.playerInput.actions["Look"].ReadValue<Vector2>().y * sensitivity;
+        // Appliquer la vitesse de rotation
+        Vector2 lookOutput = new Vector2(lookInput.x, lookInput.y) * rotationSpeed * Time.deltaTime * sensitivity;
 
-        rotationX -= mouseY;
-        rotationY += mouseX;
+        rotation.x -= lookOutput.y;
+        rotation.y += lookOutput.x;
 
-        rotationX = Mathf.Clamp(rotationX, minXRot, maxXRot);
+        rotation.x = Mathf.Clamp(rotation.x, minXRot, maxXRot);
 
-        Quaternion cameraRotation = Quaternion.Euler(rotationX, rotationY, 0);
-        transform.rotation = Quaternion.Lerp(transform.rotation, cameraRotation, Time.deltaTime * rotationSpeed);
+        Quaternion cameraRotation = Quaternion.Euler(rotation.x, rotation.y, 0);
+        transform.rotation = Quaternion.Lerp(transform.rotation, cameraRotation, Time.deltaTime * lerpSpeed);
+
+    }
+
+    public void ChangeSensitivity(float newSensitivity, bool isGamepad)
+    {
+        if (isGamepad) gamepadSensitivity = newSensitivity;
+        else mouseSensitivity = newSensitivity;
     }
 
     private void HandleCameraPosition()

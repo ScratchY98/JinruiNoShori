@@ -72,11 +72,9 @@ public class ODMGas : MonoBehaviour
         {
             case 1:
                 boostPoint = ODMleft.joint ? pointA : pointB;
-                Debug.LogWarning("Uno");
                 break;
             case 2:
                 boostPoint = Vector3.Lerp(pointA, pointB, 0.5f);
-                Debug.LogWarning("Dos");
                 break;
             default:
                 break;

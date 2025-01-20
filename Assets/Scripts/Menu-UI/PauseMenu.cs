@@ -1,47 +1,48 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
     [Header("Script's References")]
     [SerializeField] private GameObject gameOverUI;
-    //[SerializeField] private PlayerController playerController;
-    [SerializeField] private ODMGearController ODMGearControllerRef;
-    [SerializeField] private PlayerAttack playerAttack;
+    [SerializeField] private ODMGearController[] ODMGearControllerRefs;
+
+    [SerializeField] private Behaviour[] scriptsToDisable;
 
     [Header("UI")]
     [SerializeField] private static bool gameIsPaused = false;
     [SerializeField] private GameObject pauseMenuUI;
     [SerializeField] private GameObject settingsWindow;
+
+    private PlayerInput playerInput;
+
+    private void Start()
+    {
+        playerInput = LoadData.instance.playerInput;
+    }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (playerInput.actions["PauseMenu"].WasPerformedThisFrame())
         {
             if (gameIsPaused)
-            {
-                // Close the pause menu.
-                Resume();
-            }
+                Resume(); // Close the pause menu.
             else
-            {
-                // Open the pause menu.
-                Paused();
-            }
+                Paused(); // Open the pause menu.
         }
     }
 
     // Paused the game.
     void Paused()
     {
-        // Disable the playerController script.
-        //playerController.enabled = false;
-
-        // Disables the player's attack.
-        playerAttack.enabled = false;
-
         // Disables ODM Gear.
-        ODMGearControllerRef.StopODMGear();
-        ODMGearControllerRef.enabled = false;
+        foreach (ODMGearController odmGear in ODMGearControllerRefs) {
+            odmGear.StopODMGear(); }
+
+        // Disable the player's scripts.
+        foreach (Behaviour script in scriptsToDisable) {
+            script.enabled = false; }
+
 
         // Unlock the cursor and make it visible.
         Cursor.lockState = CursorLockMode.None;
@@ -58,10 +59,9 @@ public class PauseMenu : MonoBehaviour
     // Resume the Game.
     public void Resume()
     {
-        // Enable player scripts.
-        //playerController.enabled = true;
-        ODMGearControllerRef.enabled = true;
-        playerAttack.enabled = true;
+        // Enable the player's scripts
+        foreach (Behaviour script in scriptsToDisable){
+            script.enabled = true; }
 
         // Confines the cursor and makes it invisible.
         Cursor.lockState = CursorLockMode.Confined;

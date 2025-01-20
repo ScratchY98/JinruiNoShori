@@ -27,6 +27,7 @@ public class SettingsMenu : MonoBehaviour
     [Header("Other")]
     [SerializeField] private bool isMainScene;
     [SerializeField] private GameObject viewFPSText;
+    [SerializeField] private ThirdPersonCameraController thirdPersonCameraController;
 
     public void Start()
     {
@@ -50,14 +51,16 @@ public class SettingsMenu : MonoBehaviour
         LoadFullScreenData();
         LoadSoundData();
 
-        if (isMainScene)
-        {
-            LoadGamepadSensibilityData();
-            LoadMouseSensibilityData();
-            LoadCloudToogleData();
-            LoadViewFPSToogleData();
-            LoadTitanSmokeToogleData();
-        }
+
+        LoadGamepadSensibilityData();
+        LoadMouseSensibilityData();
+        LoadViewFPSToogleData();
+
+        if (!isMainScene)
+            return;
+
+        LoadCloudToogleData();
+        LoadTitanSmokeToogleData();
     }
 
     // Set ResolutionDropdown options.
@@ -75,9 +78,7 @@ public class SettingsMenu : MonoBehaviour
             options.Add(option);
 
             if (resolutions[i].width == Screen.width && resolutions[i].height == Screen.height)
-            {
                 currentResolutionIndex = i;
-            }
         }
 
         resolutionDropdown.AddOptions(options);
@@ -159,23 +160,29 @@ public class SettingsMenu : MonoBehaviour
     public void SetGamepadSensibility(float x)
     {
         PlayerPrefs.SetFloat("GamepadSensibilityData", x);
+
+        if (!isMainScene)
+            thirdPersonCameraController.ChangeSensitivity(x, true);
     }
 
     public void SetMouseSensibility(float x)
     {
         PlayerPrefs.SetFloat("MouseSensibilityData", x);
+
+        if (!isMainScene)
+            thirdPersonCameraController.ChangeSensitivity(x, false);
     }
 
     // Load Gamepad's Sensibility Data.
     private void LoadGamepadSensibilityData()
     {
-        gamepadSensibility.value = PlayerPrefs.GetFloat("GamepadSensibilityData", 2.5f);
+        gamepadSensibility.value = PlayerPrefs.GetFloat("GamepadSensibilityData", 750f);
     }
 
     // Load Mouse's Data.
     private void LoadMouseSensibilityData()
     {
-        mouseSensibility.value = PlayerPrefs.GetFloat("MouseSensibilityData", 0.5f);
+        mouseSensibility.value = PlayerPrefs.GetFloat("MouseSensibilityData", 50f);
     }
 
     // Set Cloud
