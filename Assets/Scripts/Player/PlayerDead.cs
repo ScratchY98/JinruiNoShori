@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerDead : MonoBehaviour
 {
     [Header("Scripts's References")]
-    //[SerializeField] private PlayerController playerControllerRef;
+    [SerializeField] private PlayerController playerControllerRef;
     [SerializeField] private ODMGearController ODMGearControllerRef;
     [SerializeField] private ThirdPersonCameraController thirdPersonCameraControllerRef;
     [SerializeField] private PlayerAttack playerAttackRef;
@@ -26,7 +26,7 @@ public class PlayerDead : MonoBehaviour
         UseBloodParticle(false);
 
         // Enable player scripts on Start.
-        //playerControllerRef.enabled = true;
+        playerControllerRef.enabled = true;
         ODMGearControllerRef.enabled = true;
         playerAttackRef.enabled = true;
 
@@ -43,7 +43,7 @@ public class PlayerDead : MonoBehaviour
         if (other.transform.tag == titanHandTag)
         {
             // Check if the titan is dead.      
-            TitanController titan = playerAttackRef.GetTitanControllerFromParent(other.transform.gameObject, 10);
+            TitanBehaviour titan = playerAttackRef.GetTitanControllerFromParent(other.transform.gameObject, 10);
             if (titan.isDead)
                 // If the titan is dead, the player won't get eaten, so let's return the fonction.
                 return;
@@ -52,7 +52,7 @@ public class PlayerDead : MonoBehaviour
                 // Disables the pause menu.
                 pauseMenuRef.enabled = false;
 
-                // Make the titan eat (see TitanController.cs).
+                // Make the titan eat (see TitanBehaviour.cs).
                 titan.Eat();
 
                 // Disables ODM Gear.

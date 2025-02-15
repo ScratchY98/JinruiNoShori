@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -35,26 +34,25 @@ public class PlayerAttack : MonoBehaviour
     {
         RaycastHit hit;
 
-
         if (Physics.Raycast(playerCamera.position, playerCamera.forward, out hit, AttackDistance, EnemyLayer))
         {
             Debug.LogWarning("Attack", hit.collider.gameObject);
-            TitanController titanController = GetTitanControllerFromParent(hit.collider.gameObject, 6);
+            TitanBehaviour titanBehaviour = GetTitanControllerFromParent(hit.collider.gameObject, 6);
 
-            if (titanController != null)
+            if (titanBehaviour != null)
             {
                 if (ODMGearControllerRef.ODMGearPoint != null)
                     ODMGearControllerRef.ODMGearPoint.parent = null;
 
                 ODMGearControllerRef.StopODMGear();
-                titanController.Dead();
+                titanBehaviour.Dead();
                 SpawnObject.instance.SpawnObjectsAtRandomPosition(0);
 
             }
         }
     }
 
-    public TitanController GetTitanControllerFromParent(GameObject obj, int parentnumber)
+    public TitanBehaviour GetTitanControllerFromParent(GameObject obj, int parentnumber)
     {
         Transform goodParent = obj.transform;
 
@@ -66,14 +64,14 @@ public class PlayerAttack : MonoBehaviour
                 return null;
             }
 
-            TitanController titanController = goodParent.GetComponent<TitanController>();
-            if (titanController != null)
-                return titanController;
+            TitanBehaviour titanBehaviour = goodParent.GetComponent<TitanBehaviour>();
+            if (titanBehaviour != null)
+                return titanBehaviour;
 
             goodParent = goodParent.parent;
         }
 
-        Debug.LogWarning("Can't find TitanController");
+        Debug.LogWarning("Can't find TitanBehaviour !");
         return null;
     }
 }

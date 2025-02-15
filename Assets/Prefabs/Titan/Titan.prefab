@@ -11420,8 +11420,9 @@ GameObject:
   - component: {fileID: 8816804818572498291}
   - component: {fileID: 8803167552470600354}
   - component: {fileID: 5266400918417476391}
-  - component: {fileID: 3497460315173957961}
-  - component: {fileID: 3209636714936276115}
+  - component: {fileID: 6670395696321862789}
+  - component: {fileID: 2124438279942180395}
+  - component: {fileID: 6044052935725653970}
   m_Layer: 9
   m_Name: Titan
   m_TagString: Untagged
@@ -11438,7 +11439,7 @@ Transform:
   m_GameObject: {fileID: 5794256951403415632}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.04800204, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -11460,7 +11461,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: a3ed13a5d1cf44b46bda968619aa22c9, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -11491,7 +11492,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &3497460315173957961
+--- !u!114 &6670395696321862789
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11500,37 +11501,46 @@ MonoBehaviour:
   m_GameObject: {fileID: 5794256951403415632}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 305810a7b8c5c9b4abc1e31c8e4ebd63, type: 3}
+  m_Script: {fileID: 11500000, guid: 3a99d075674dd0544bdb40719dc8a540, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 5266400918417476391}
-  animator: {fileID: 8803167552470600354}
-  hipsRb: {fileID: 1182961541669936151}
-  huntingDetectionRadius: 34.25
-  huntingSpeed: 75
-  isHunting: 0
+  visionDetection:
+    range: 54.7
+    angle: 110
+  attackDetection:
+    range: 15.3
+    angle: 90
   huntingIndication: {fileID: 3822520864947935543}
-  patrolRadius: 65
-  patrolSpeed: 45
-  isRelax: 0
+  patrolRadius: 71.1
+  originRadius: {fileID: 1988873504769489496}
+  _player: {fileID: 0}
+  whatGizmosDraw: 2
+  shouldSeeTheHuntIndic: 1
+--- !u!114 &2124438279942180395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5794256951403415632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b666c141c965d6540a94edd18d718ccc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensor: {fileID: 6670395696321862789}
+  agent: {fileID: 5266400918417476391}
+  isWaiting: 0
   minRelaxDelay: 5
   maxRelaxDelay: 8
-  attackDetectionRadius: 13
-  isAttacking: 0
   smokeParticleSystem: {fileID: 3717053323003444956}
   bloodParticleSystem:
   - {fileID: 4961565993691810588}
   - {fileID: 2057281161833737565}
   - {fileID: 3089146459398279919}
-  ikWeight: 0
-  ikSpeed: 0.8
-  maxIKWeight: 1
-  isEating: 0
-  destinationGizmosSIze: 5
-  originRadius: {fileID: 1988873504769489496}
   isDead: 0
-  whatGizmosDraw: 3
---- !u!114 &3209636714936276115
+  hipsRb: {fileID: 1182961541669936151}
+--- !u!114 &6044052935725653970
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11539,11 +11549,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 5794256951403415632}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf45940c0f1da7f4896fbd6051a0e7ce, type: 3}
+  m_Script: {fileID: 11500000, guid: 184ae66bfaa25374ca0bbe5bb2214584, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 8803167552470600354}
-  titanController: {fileID: 3497460315173957961}
+  sensor: {fileID: 6670395696321862789}
+  titanBehaviour: {fileID: 2124438279942180395}
+  ikWeight: 0
+  ikSpeed: 0.8
+  maxIKWeight: 1
 --- !u!1 &6136270289609441643
 GameObject:
   m_ObjectHideFlags: 0
