@@ -139,8 +139,7 @@ public class SettingsMenu : MonoBehaviour
     // Load Sound Volume Data
     private void LoadSoundData()
     {
-       
-        soundSlider.value = PlayerPrefs.GetFloat("Sound", 0);
+        soundSlider.value = PlayerPrefs.GetFloat("Sound", -20);
     }
 
     // Set Titan Smoke

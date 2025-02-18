@@ -36,7 +36,7 @@ public class PlayerAttack : MonoBehaviour
 
         if (Physics.Raycast(playerCamera.position, playerCamera.forward, out hit, AttackDistance, EnemyLayer))
         {
-            Debug.LogWarning("Attack", hit.collider.gameObject);
+            Debug.Log("Attack", hit.collider.gameObject);
             TitanBehaviour titanBehaviour = GetTitanControllerFromParent(hit.collider.gameObject, 6);
 
             if (titanBehaviour != null)

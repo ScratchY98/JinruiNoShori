@@ -7,6 +7,7 @@ public class MainMenu : MonoBehaviour
 {
     private string mapToLoad;
     [SerializeField] private GameObject settingsWindow;
+    [SerializeField] private GameObject creditWindow;
     [SerializeField] private GameObject changeAvatarWindow;
     [SerializeField] private Dropdown mapDropdown;
     [SerializeField] private List<string> maps = new List<string>();
@@ -57,6 +58,16 @@ public class MainMenu : MonoBehaviour
     {
         settingsWindow.SetActive(false);
         changeAvatar.SaveAllColor();
+    }
+
+    public void OpenCreditWindow()
+    {
+        creditWindow.SetActive(true);
+    }
+
+    public void CloseCreditWindow()
+    {
+        creditWindow.SetActive(false);
     }
 
     // Button to exit

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
@@ -7,6 +8,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioMixerGroup soundEffectMixer;
 
     public static AudioManager instance;
+
+    private int initialSceneIndex;
 
     private void Awake()
     {
@@ -18,16 +21,33 @@ public class AudioManager : MonoBehaviour
 
         instance = this;
         DontDestroyOnLoad(this.gameObject);
+
+        initialSceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    // Function to play a sound (used notably for gas).
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.buildIndex != initialSceneIndex)
+            Destroy(gameObject);
+    }
+
     public AudioSource PlayClipAt(AudioClip clip, Vector3 pos)
     {
         GameObject tempGO = new GameObject("TempAudio");
         tempGO.transform.position = pos;
         AudioSource audioSource = tempGO.AddComponent<AudioSource>();
         audioSource.clip = clip;
-        audioSource.outputAudioMixerGroup = soundEffectMixer;
+
+        if (soundEffectMixer != null)
+            audioSource.outputAudioMixerGroup = soundEffectMixer;
+
         audioSource.Play();
         Destroy(tempGO, clip.length);
         return audioSource;

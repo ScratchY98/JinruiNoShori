@@ -30,9 +30,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 658167356939235687}
   - {fileID: 731829993977283602}
   - {fileID: 635701537878693730}
+  - {fileID: 658167356939235687}
   m_Father: {fileID: 7148298912935724586}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &5187872751799882529
@@ -52,10 +52,10 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.3529282, y: 3.5109026, z: 3.256426}
-  m_Center: {x: 0.021884203, y: -0.43630183, z: -1.4423429}
+  m_Size: {x: 7, y: 3.5408854, z: 3.144414}
+  m_Center: {x: 0.021884203, y: -1.165859, z: -1.7538562}
 --- !u!1 &298546168021823625
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,8 +470,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2188862774737938058}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.000000044703484, y: -7.763507e-11, z: 3.6617064e-13, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: -1.31}
+  m_LocalRotation: {x: -0.000000044703484, y: -7.763492e-11, z: 1.2774395e-12, w: 1}
+  m_LocalPosition: {x: 0, y: 0.49999994, z: -1.3100001}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5823,12 +5823,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3542211698781407283}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: -7.1054274e-14, z: -2.9976748e-13, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -0.3476, z: 0}
+  m_LocalRotation: {x: -0.70710677, y: -0.0000034829332, z: 0.000003256913, w: 0.7071069}
+  m_LocalPosition: {x: -0.00012615047, y: 13.2424, z: -0.22069855}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2251742456841193161}
+  m_Father: {fileID: 632422038727659603}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &3717053323003444956
 ParticleSystem:
@@ -10806,13 +10806,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3930232098005517800}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.000004644765, y: 0.9659259, z: 0.25881898, w: 0.000001079103}
-  m_LocalPosition: {x: 0.00003115187, y: 3, z: 8.220699}
+  m_LocalRotation: {x: 0.0000046659256, y: 0.9848818, z: -0.17322773, w: -0.0000009685754}
+  m_LocalPosition: {x: 0, y: 9.2, z: 12.46}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2251742456841193161}
-  m_LocalEulerAnglesHint: {x: -30, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 19.951, y: 180, z: 0.001}
 --- !u!1 &3940225664315619532
 GameObject:
   m_ObjectHideFlags: 0
@@ -11226,6 +11226,7 @@ Transform:
   - {fileID: 510376238347122619}
   - {fileID: 620902765317465096}
   - {fileID: 5548157480816148624}
+  - {fileID: 3059188069404600553}
   m_Father: {fileID: 8816804818572498291}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &3627031068287293901
@@ -11343,7 +11344,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 22.0524}
+  m_AnchoredPosition: {x: 0, y: 25}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &633245029579868175
@@ -11506,10 +11507,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visionDetection:
     range: 54.7
-    angle: 110
+    angle: 145
   attackDetection:
     range: 15.3
-    angle: 90
+    angle: 360
   huntingIndication: {fileID: 3822520864947935543}
   patrolRadius: 71.1
   originRadius: {fileID: 1988873504769489496}
@@ -11530,9 +11531,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sensor: {fileID: 6670395696321862789}
   agent: {fileID: 5266400918417476391}
+  titanAnimator: {fileID: 6044052935725653970}
   isWaiting: 0
-  minRelaxDelay: 5
-  maxRelaxDelay: 8
+  minRelaxDelay: 0.55
+  maxRelaxDelay: 1.1
   smokeParticleSystem: {fileID: 3717053323003444956}
   bloodParticleSystem:
   - {fileID: 4961565993691810588}
@@ -11558,6 +11560,7 @@ MonoBehaviour:
   ikWeight: 0
   ikSpeed: 0.8
   maxIKWeight: 1
+  isEating: 0
 --- !u!1 &6136270289609441643
 GameObject:
   m_ObjectHideFlags: 0
@@ -11588,7 +11591,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5985309015361398599}
-  - {fileID: 3059188069404600553}
   - {fileID: 1988873504769489496}
   - {fileID: 1797189826716214684}
   m_Father: {fileID: 8816804818572498291}

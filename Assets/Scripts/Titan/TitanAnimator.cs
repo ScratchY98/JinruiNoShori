@@ -14,7 +14,7 @@ public class TitanAnimator : MonoBehaviour
     [SerializeField][Min(0)] private float maxIKWeight = 1f;
     public static Transform grab;
 
-    private bool isEating;
+    [HideInInspector] public bool isEating;
 
 
     private void ResetAllAnimationTriggers()
@@ -23,6 +23,12 @@ public class TitanAnimator : MonoBehaviour
         {
             animator.ResetTrigger(trigger.ToString());
         }
+    }
+
+    private void SetTrigger(AnimationTriggers animation)
+    {
+        ResetAllAnimationTriggers();
+        animator.SetTrigger(animation.ToString());
     }
 
     private void Start()
@@ -35,43 +41,40 @@ public class TitanAnimator : MonoBehaviour
     {
         WalkAnimation();
         AttackAnimation();
+        IdleAnimation();
         EatAnimation();
     }
 
     void WalkAnimation()
     {
-        if (!sensor.canAttackPlayer && !isEating)
+        if (!sensor.canAttackPlayer && !isEating && !titanBehaviour.isWaiting)
         {
-            ResetAllAnimationTriggers();
-            animator.SetTrigger(AnimationTriggers.Walk.ToString());
+            SetTrigger(AnimationTriggers.Walk);
         }
     }
 
     void AttackAnimation()
     {
-        if (sensor.canAttackPlayer && !isEating)
+        if (sensor.canAttackPlayer && !isEating && !titanBehaviour.isWaiting)
         {
-            ResetAllAnimationTriggers();
-            animator.SetTrigger(AnimationTriggers.Attack.ToString());
+            SetTrigger(AnimationTriggers.Attack);
         }
     }
 
     void EatAnimation()
     {
-        if (!isEating)
-            return;
-
-        ResetAllAnimationTriggers();
-        animator.SetTrigger(AnimationTriggers.Eat.ToString());
+        if (isEating)
+        {
+            SetTrigger(AnimationTriggers.Eat);
+        }
     }
 
     void IdleAnimation()
     {
-        if (!titanBehaviour.isWaiting || isEating)
-            return;
-
-        ResetAllAnimationTriggers();
-        animator.SetTrigger(AnimationTriggers.Idle.ToString());
+        if (titanBehaviour.isWaiting && !isEating)
+        {
+            SetTrigger(AnimationTriggers.Idle);
+        }
     }
 
 

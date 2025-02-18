@@ -5,6 +5,7 @@ public class TitanBehaviour : MonoBehaviour
 {
     [SerializeField] private TitanSensor sensor;
     [SerializeField] private NavMeshAgent agent;
+    [SerializeField] private TitanAnimator titanAnimator;
     [HideInInspector] public bool isWaiting = false;
 
     [SerializeField][Min(0)] private float minRelaxDelay;
@@ -94,7 +95,10 @@ public class TitanBehaviour : MonoBehaviour
             Vector3 randomPosition = agent.transform.position + Random.insideUnitSphere * sensor.patrolRadius;
 
             if (NavMesh.SamplePosition(randomPosition, out hit, 1f, NavMesh.AllAreas))
+            {
+                Debug.Log(gameObject + "Not find position this frame, wait for the next.");
                 return hit.position;
+            }
         }
         return agent.transform.position;
     }
@@ -130,6 +134,7 @@ public class TitanBehaviour : MonoBehaviour
     public void Eat()
     {
         sensor.shouldSeeTheHuntIndic = false;
+        titanAnimator.isEating = true;
     }
 
     private void EnablePhysicsAfterDead()
