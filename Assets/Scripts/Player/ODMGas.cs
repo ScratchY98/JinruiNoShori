@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -26,6 +27,9 @@ public class ODMGas : MonoBehaviour
     [SerializeField] private bool canUseGasBoost = true;
     [SerializeField] private float currentCooldown;
 
+    [Header("Speed info")]
+    [SerializeField] private Text speedInfo;
+
     // Input
     private PlayerInput playerInput;
 
@@ -43,6 +47,10 @@ public class ODMGas : MonoBehaviour
     {
         if (IsCooldown)
             DoCooldown();
+
+        float currentMagnitude = playerRb.linearVelocity.magnitude / 5;
+        ActualiseJSONSuccess.instance.SaveSuccess(currentMagnitude, "ODMGearBiggestVelocity");
+        speedInfo.text = currentMagnitude.ToString("F2") + " m/s";
     }
     void FixedUpdate()
     {

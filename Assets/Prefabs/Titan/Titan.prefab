@@ -11541,6 +11541,7 @@ MonoBehaviour:
   - {fileID: 2057281161833737565}
   - {fileID: 3089146459398279919}
   isDead: 0
+  shouldPatrol: 1
   hipsRb: {fileID: 1182961541669936151}
 --- !u!114 &6044052935725653970
 MonoBehaviour:

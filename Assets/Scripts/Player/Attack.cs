@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class PlayerAttack : MonoBehaviour
 
     [HideInInspector] public bool isAttacking = false;
     [HideInInspector] public bool canAttack;
+
 
     private void Start()
     {
@@ -39,19 +41,17 @@ public class PlayerAttack : MonoBehaviour
             Debug.Log("Attack", hit.collider.gameObject);
             TitanBehaviour titanBehaviour = GetTitanControllerFromParent(hit.collider.gameObject, 6);
 
-            if (titanBehaviour != null)
-            {
-                if (ODMGearControllerRef.ODMGearPoint != null)
-                    ODMGearControllerRef.ODMGearPoint.parent = null;
+            if (titanBehaviour == null) return;
 
-                ODMGearControllerRef.StopODMGear();
-                titanBehaviour.Dead();
-                SpawnObject.instance.SpawnObjectsAtRandomPosition(0);
+            if (ODMGearControllerRef.ODMGearPoint != null)
+                ODMGearControllerRef.ODMGearPoint.parent = null;
 
-            }
+            ODMGearControllerRef.StopODMGear();
+            titanBehaviour.Dead();
+
+            SpawnObject.instance.SpawnObjectsAtRandomPosition(0);
         }
     }
-
     public TitanBehaviour GetTitanControllerFromParent(GameObject obj, int parentnumber)
     {
         Transform goodParent = obj.transform;

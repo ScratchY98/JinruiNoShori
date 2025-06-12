@@ -8,77 +8,75 @@ public class TitanBehaviour : MonoBehaviour
     [SerializeField] private TitanAnimator titanAnimator;
     [HideInInspector] public bool isWaiting = false;
 
-    [SerializeField][Min(0)] private float minRelaxDelay;
-    [SerializeField][Min(0)] private float maxRelaxDelay;
+    [SerializeField, Min(0)] private float minRelaxDelay;
+    [SerializeField, Min(0)] private float maxRelaxDelay;
 
-    [Header("Particle's Settings")]
+    [Header("Particle Settings")]
     [SerializeField] private ParticleSystem smokeParticleSystem;
     [SerializeField] private ParticleSystem[] bloodParticleSystem;
 
     [HideInInspector] public bool isDead = false;
-    private bool wasAddScoreBefore = false;
+    public bool shouldPatrol = true;
+    private bool hasAddedScore = false;
 
     [SerializeField] private Rigidbody hipsRb;
 
-    private void Start()
+    public virtual void Start()
     {
-        UseBloodParticle(false);
+        ActivateBloodParticles(false);
 
         if (LoadData.instance.isTitanSmoke)
             smokeParticleSystem.Play();
-        else smokeParticleSystem.Stop();
+        else
+            smokeParticleSystem.Stop();
 
         isDead = false;
     }
 
-
-    private void Update()
+    public virtual void Update()
     {
-        if (isDead)
-            return;
 
-        if(sensor.canAttackPlayer)
+        if (isDead) return;
+
+        if (sensor.canAttackPlayer)
         {
-            UpdateAttack();
+            HandleAttack();
             return;
         }
 
-        if (sensor.canSeePlayer)
+        if (sensor.canSeePlayer || !shouldPatrol)
         {
-            UpdateHunt();
+            HandleHunting();
             return;
         }
 
-        UpdateNeutral();
+        HandleNeutralState();
     }
 
-    private void UpdateAttack()
+    private void HandleAttack()
     {
         agent.isStopped = true;
     }
 
-    private void UpdateHunt()
+    private void HandleHunting()
     {
         agent.isStopped = false;
         agent.SetDestination(sensor.PlayerPosition);
     }
 
-    private void UpdateNeutral()
+    private void HandleNeutralState()
     {
-        if ((Vector3.Distance(agent.transform.position, agent.destination) > 1f) || isWaiting)
-            return;
+        if (Vector3.Distance(agent.transform.position, agent.destination) > 1f || isWaiting) return;
 
         isWaiting = true;
         agent.isStopped = true;
         float waitTime = Random.Range(minRelaxDelay, maxRelaxDelay);
-        Invoke("SetNewDestination", waitTime);
+        Invoke(nameof(SetNewDestination), waitTime);
     }
-
 
     private void SetNewDestination()
     {
-        if (sensor.canSeePlayer)
-            return;
+        if (sensor.canSeePlayer) return;
 
         Vector3 newDestination = GetNewPatrolPoint();
         agent.SetDestination(newDestination);
@@ -89,46 +87,41 @@ public class TitanBehaviour : MonoBehaviour
     private Vector3 GetNewPatrolPoint()
     {
         NavMeshHit hit;
-
         for (int i = 0; i < 1000; i++)
         {
             Vector3 randomPosition = agent.transform.position + Random.insideUnitSphere * sensor.patrolRadius;
-
             if (NavMesh.SamplePosition(randomPosition, out hit, 1f, NavMesh.AllAreas))
-            {
-                Debug.Log(gameObject + "Not find position this frame, wait for the next.");
                 return hit.position;
-            }
         }
+
+        Debug.LogWarning($"{gameObject.name} n’a pas trouvé de position après 1000 essais.");
         return agent.transform.position;
     }
 
-    private void UseBloodParticle(bool active)
+    private void ActivateBloodParticles(bool active)
     {
-        for (int i = 0; i < bloodParticleSystem.Length; i++)
+        foreach (var particle in bloodParticleSystem)
         {
-            if (active)
-                bloodParticleSystem[i].Play();
-            else
-                bloodParticleSystem[i].Stop();
+            if (active) particle.Play();
+            else particle.Stop();
         }
     }
 
-    public void Dead()
+    public virtual void Dead()
     {
         sensor.shouldSeeTheHuntIndic = false;
         isDead = true;
         agent.isStopped = true;
-        UseBloodParticle(true);
-        transform.GetComponent<Animator>().enabled = false;
+        ActivateBloodParticles(true);
+        GetComponent<Animator>().enabled = false;
 
-        if (!wasAddScoreBefore)
+        if (!hasAddedScore)
         {
-            wasAddScoreBefore = true;
+            hasAddedScore = true;
             ScoreManager.instance.AddScore(1);
         }
 
-        Invoke("EnablePhysicsAfterDead", 2f);
+        Invoke(nameof(EnablePhysicsAfterDeath), 2f);
     }
 
     public void Eat()
@@ -137,13 +130,13 @@ public class TitanBehaviour : MonoBehaviour
         titanAnimator.isEating = true;
     }
 
-    private void EnablePhysicsAfterDead()
+    private void EnablePhysicsAfterDeath()
     {
         hipsRb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
         smokeParticleSystem.Stop();
 
-        transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+        transform.position = new Vector3(transform.position.x, Mathf.Max(transform.position.y, 0), transform.position.z);
 
-        Destroy(this.gameObject, 3f);
+        Destroy(gameObject, 3f);
     }
 }

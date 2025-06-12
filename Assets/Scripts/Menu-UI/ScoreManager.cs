@@ -29,7 +29,11 @@ public class ScoreManager : MonoBehaviour
     // Add score.
     public void AddScore(int scoreAmount)
     {
+        // Add Score
         score += scoreAmount;
+        // Save the Best Score
+        ActualiseJSONSuccess.instance.SaveSuccess(score, "killedTitan");
+        // Show the score on the text
         scoreText.text = score.ToString();
     }
 }

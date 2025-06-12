@@ -9,6 +9,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject settingsWindow;
     [SerializeField] private GameObject creditWindow;
     [SerializeField] private GameObject changeAvatarWindow;
+    [SerializeField] private GameObject successesWindow;
     [SerializeField] private Dropdown mapDropdown;
     [SerializeField] private List<string> maps = new List<string>();
     [SerializeField] private ChangeAvatar changeAvatar;
@@ -46,6 +47,16 @@ public class MainMenu : MonoBehaviour
     public void CloseChangeAvatarWindow()
     {
         changeAvatarWindow.SetActive(false);
+    }
+
+    public void OpenSuccessesWindow()
+    {
+        successesWindow.SetActive(true);
+    }
+
+    public void CloseSuccessesWindow()
+    {
+        successesWindow.SetActive(false);
     }
 
     public void ChangeMap(int map)

@@ -72,7 +72,6 @@ public class PlayerDead : MonoBehaviour
 
                 // Puts the camera in the correct position
                 Transform cameraDeadPos = titan.transform.GetChild(2).GetChild(0);
-                Debug.LogWarning(titan.transform.GetChild(2).GetChild(0).gameObject);
                 thirdPersonCameraControllerRef.transform.parent = cameraDeadPos.transform;
                 thirdPersonCameraControllerRef.ActiveDeathCamera(cameraDeadPos.position, cameraDeadPos.rotation);
 
