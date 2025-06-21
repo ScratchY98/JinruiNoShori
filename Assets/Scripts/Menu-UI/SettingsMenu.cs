@@ -18,6 +18,7 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] private Toggle fullScreenToggle;
     [SerializeField] private Toggle titanSmokeToggle;
     [SerializeField] private Toggle cloudToggle;
+    [SerializeField] private Toggle viewSuccessesToggle;
     [SerializeField] private Toggle viewFPSToggle;
 
     [Header("Slider")]
@@ -54,10 +55,10 @@ public class SettingsMenu : MonoBehaviour
 
         LoadGamepadSensibilityData();
         LoadMouseSensibilityData();
+        LoadViewSuccesses();
         LoadViewFPSToogleData();
 
-        if (!isMainScene)
-            return;
+        if (!isMainScene) return;
 
         LoadCloudToogleData();
         LoadTitanSmokeToogleData();
@@ -126,6 +127,12 @@ public class SettingsMenu : MonoBehaviour
 
         fullScreenToggle.isOn = isFullScreen;
         Screen.fullScreen = isFullScreen;
+    }
+
+    // Reset all settings Data
+    public void ResetSettings()
+    {
+        PlayerPrefs.DeleteAll();
     }
 
     // Set Sound Volume
@@ -197,6 +204,20 @@ public class SettingsMenu : MonoBehaviour
     private void LoadCloudToogleData()
     {
         cloudToggle.isOn = PlayerPrefs.GetInt("isCloud", 1) == 1 ? true : false;
+    }
+
+    public void SetViewSuccesses(bool isViewSuccesses)
+    {
+        // Set if we want to be informed when we achieve success. We use a int for save a bool in PlayerPref. If isViewSuccessesint = 1, we want, else we won't.
+        int isViewSuccessesint = isViewSuccesses ? 1 : 0;
+
+        PlayerPrefs.SetInt("ViewSuccesses", isViewSuccessesint);
+    }
+
+    // Load ViewSuccesses Data.
+    private void LoadViewSuccesses()
+    {
+        viewSuccessesToggle.isOn = PlayerPrefs.GetInt("ViewSuccesses", 0) == 1 ? true : false;
     }
 
     public void SetViewFPS(bool isViewFPS)

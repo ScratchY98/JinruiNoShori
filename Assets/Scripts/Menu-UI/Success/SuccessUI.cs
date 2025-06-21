@@ -126,5 +126,10 @@ public class SuccessUI : MonoBehaviour
             return -1;
         }
     }
+
+    public void RESETsuccessesSave()
+    {
+        File.WriteAllText(pathToJSON, "{}");
+    }
 }
 

@@ -1,6 +1,6 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -49,7 +49,7 @@ public class ODMGas : MonoBehaviour
             DoCooldown();
 
         float currentMagnitude = playerRb.linearVelocity.magnitude / 5;
-        ActualiseJSONSuccess.instance.SaveSuccess(currentMagnitude, "ODMGearBiggestVelocity");
+        ActualiseJSONSuccess.instance.SaveSuccess(Convert.ToInt32(currentMagnitude), "ODMGearBiggestVelocity");
         speedInfo.text = currentMagnitude.ToString("F2") + " m/s";
     }
     void FixedUpdate()

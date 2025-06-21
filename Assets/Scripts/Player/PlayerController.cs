@@ -68,6 +68,7 @@ public class PlayerController : MonoBehaviour
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             moveDirection.Normalize();
 
+
             Quaternion newRotation = Quaternion.LookRotation(moveDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * 10.0f);
 

@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Windows;
 
 [RequireComponent(typeof(Rigidbody))]
 public class ODMGearController : MonoBehaviour
@@ -16,6 +18,7 @@ public class ODMGearController : MonoBehaviour
     [HideInInspector] public Transform ODMGearPoint;
     [SerializeField] private GameObject ODMGearPointPrefab;
     [SerializeField][Min(0)] private float ODMGearVelocity = 10;
+    [SerializeField][Min(0)] private float ODMGearMoveVelocity = 10;
     private float originalDistance;
     [SerializeField] private ODMGearController odm;
 
@@ -27,7 +30,6 @@ public class ODMGearController : MonoBehaviour
     private PlayerInput playerInput;
     private string rewindInput;
     private string grapplingInput;
-
 
     private Rigidbody playerRb;
     public static bool canUseODMGear;
@@ -60,6 +62,20 @@ public class ODMGearController : MonoBehaviour
             Rewind();
         else if (!playerRb.useGravity)
             playerRb.useGravity = true;
+
+        if (joint)
+            MoveOnODMGear();
+    }
+
+    private void MoveOnODMGear()
+    {
+        Vector2 moveInput = playerInput.actions["Move"].ReadValue<Vector2>();
+
+        if (moveInput.magnitude < 0.1f) return;
+
+        Vector3 moveDirection = (playerCamera.right * moveInput.x).normalized;
+
+        playerRb.AddForce(moveDirection * ODMGearMoveVelocity, ForceMode.Acceleration);
     }
 
     private void HandleInput()
@@ -159,6 +175,13 @@ public class ODMGearController : MonoBehaviour
         if (joint == null)
         {
             lr.SetPositions(null);
+            return;
+        }
+
+        if (ODMGearPoint.position == null)
+        {
+            lr.SetPositions(null);
+            StopODMGear();
             return;
         }
 
